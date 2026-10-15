@@ -16,6 +16,8 @@ import { API_CONFIG } from '../config/api.config';
 @Injectable()
 export class HttpLoanRepository extends LoanRepository {
   /**
+   * Inicializa el adaptador HTTP.
+   *
    * @param http Cliente HTTP de Angular
    */
   constructor(private readonly http: HttpClient) {
@@ -34,16 +36,19 @@ export class HttpLoanRepository extends LoanRepository {
     );
   }
 
+  /** Consulta préstamos filtrados por estado. */
   override getLoansByStatus(status: string, count: number): Observable<Loan[]> {
     return this.http.get<Loan[]>(
       `${API_CONFIG.loansApiUrl}/api/loans/status/${encodeURIComponent(status)}/${count}`
     );
   }
 
+  /** Consulta un préstamo por identificador. */
   override getLoanById(id: number): Observable<Loan> {
     return this.http.get<Loan>(`${API_CONFIG.loansApiUrl}/api/loans/detail/${id}`);
   }
 
+  /** Consulta préstamos relacionados con un usuario. */
   override searchLoans(userName: string, count: number): Observable<Loan[]> {
     return this.getLoans(count).pipe(
       map((loans) => {

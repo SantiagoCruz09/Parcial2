@@ -11,6 +11,7 @@ import { LoanRepository } from '../../domain/repositories/loan.repository';
  * usuario. Un término vacío desactiva la búsqueda.
  */
 export class SearchLoansByUserUseCase {
+  /** Crea el caso de uso con el repositorio opcional para consultas HTTP. */
   constructor(private readonly repository?: LoanRepository) {}
   /**
    * Ejecuta el caso de uso.
@@ -19,8 +20,11 @@ export class SearchLoansByUserUseCase {
    * @param term Término de búsqueda
    * @returns Nuevo arreglo con los préstamos que coinciden
    */
+  /** Busca en memoria por usuario. */
   execute(loans: Loan[], term: string): Loan[];
+  /** Consulta al servicio préstamos relacionados con un usuario. */
   execute(term: string, count: number): Observable<Loan[]>;
+  /** Ejecuta la variante local o remota según los argumentos recibidos. */
   execute(
     loansOrTerm: Loan[] | string,
     termOrCount: string | number

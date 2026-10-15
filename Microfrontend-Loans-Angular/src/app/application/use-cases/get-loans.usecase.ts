@@ -12,6 +12,8 @@ import { LoanRepository } from '../../domain/repositories/loan.repository';
  */
 export class GetLoansUseCase {
   /**
+   * Inicializa el caso de uso.
+   *
    * @param repository Puerto de acceso a préstamos
    */
   constructor(private readonly repository: LoanRepository) {}
