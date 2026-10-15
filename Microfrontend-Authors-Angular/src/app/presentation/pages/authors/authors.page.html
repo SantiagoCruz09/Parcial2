@@ -1,0 +1,77 @@
+<section class="authors-page">
+  <header class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h2 class="mb-1"><i class="bi bi-people"></i> Catálogo de Autores</h2>
+      <p class="text-body-secondary mb-0">
+        Microfrontend Authors &middot; microservicio Spring Boot (puerto 3002)
+      </p>
+    </div>
+    <button type="button" class="btn btn-outline-primary" (click)="reload()">
+      <i class="bi bi-arrow-clockwise"></i> Recargar
+    </button>
+  </header>
+
+  <div class="row g-2 align-items-end mb-4">
+    <div class="col-12 col-md-5">
+      <label class="form-label" for="authors-search">Buscar por nombre</label>
+      <input
+        id="authors-search"
+        type="text"
+        class="form-control"
+        placeholder="Escribe un nombre..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="onSearchChange($event)"
+      />
+    </div>
+    <div class="col-6 col-md-3">
+      <label class="form-label" for="authors-nationality">Nacionalidad</label>
+      <select
+        id="authors-nationality"
+        class="form-select"
+        [ngModel]="nationality()"
+        (ngModelChange)="onNationalityChange($event)"
+      >
+        <option value="all">Todas</option>
+        <option *ngFor="let item of nationalities()" [value]="item">{{ item }}</option>
+      </select>
+    </div>
+    <div class="col-6 col-md-2">
+      <label class="form-label" for="authors-count">Cantidad</label>
+      <select
+        id="authors-count"
+        class="form-select"
+        [ngModel]="count()"
+        (ngModelChange)="onCountChange($event)"
+      >
+        <option *ngFor="let option of countOptions" [ngValue]="option">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="loading()" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2 text-body-secondary">Cargando autores...</p>
+  </div>
+
+  <div *ngIf="error() && !loading()" class="alert alert-danger" role="alert">
+    <i class="bi bi-exclamation-triangle"></i> {{ error() }}
+  </div>
+
+  <div
+    *ngIf="!loading() && !error() && visibleAuthors().length === 0"
+    class="alert alert-info"
+    role="alert"
+  >
+    No se encontraron autores con los criterios seleccionados.
+  </div>
+
+  <div class="row g-3" *ngIf="!loading() && !error()">
+    <div class="col-12 col-sm-6 col-lg-4" *ngFor="let author of visibleAuthors()">
+      <app-author-card [author]="author"></app-author-card>
+    </div>
+  </div>
+</section>

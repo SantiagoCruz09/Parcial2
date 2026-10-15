@@ -34,7 +34,7 @@ Todos los componentes aplican separación por capas (dominio, aplicación, infra
 | Microservice Loans | Node.js + Express | 3003 | ✅ Estructura creada |
 | Host (Client-Host-Angular) | Angular | 4200 | ⏳ Pendiente migrar a los nuevos dominios |
 | Microfrontend Books | Angular | 4201 | ✅ Implementado (consume MS Books :3001) |
-| Microfrontend Authors | Angular | 4202 | ⏳ Pendiente |
+| Microfrontend Authors | Angular | 4202 | ✅ Implementado (consume MS Authors :3002) |
 | Microfrontend Loans | Angular | 4203 | ⏳ Pendiente |
 
 > Nota: el host ya tiene configuradas las rutas `/books`, `/authors` y `/loans`
@@ -105,7 +105,14 @@ npm install
 npm run start
 ```
 
-Pruebas unitarias (Jest) del microfrontend Books:
+```bash
+# Microfrontend Authors -> http://localhost:4202  (remoteEntry: /remoteEntry.js)
+cd Microfrontend-Authors-Angular
+npm install
+npm run start
+```
+
+Pruebas unitarias (Jest) de los microfrontends:
 
 ```bash
 cd Microfrontend-Books-Angular
@@ -154,4 +161,26 @@ src/app
 - **Módulo federado:** `mf-books`
 - **Módulo expuesto:** `./BooksPage` (`src/app/presentation/pages/books/books.page.ts`)
 - **Microservicio consumido:** `http://localhost:3001` (`GET /api/books/{count}`)
+
+### Microfrontend Authors (Angular + Module Federation)
+
+```
+src/app
+├── domain          # modelos y contratos de repositorio (núcleo)
+│   ├── models
+│   └── repositories
+├── application     # casos de uso
+│   └── use-cases   # GetAuthors, FilterAuthorsByNationality, SearchAuthorsByName
+├── infrastructure  # adaptadores HTTP y configuración
+│   ├── config
+│   └── repositories
+└── presentation    # componentes y páginas
+    ├── components
+    └── pages
+```
+
+- **Módulo federado:** `mf-authors`
+- **Módulo expuesto:** `./AuthorsPage` (`src/app/presentation/pages/authors/authors.page.ts`)
+- **Microservicio consumido:** `http://localhost:3002` (`GET /api/authors/{count}`)
+
 
