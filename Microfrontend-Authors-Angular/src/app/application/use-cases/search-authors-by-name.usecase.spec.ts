@@ -35,4 +35,24 @@ describe('SearchAuthorsByNameUseCase', () => {
   it('retorna un arreglo vacío si no hay coincidencias', () => {
     expect(useCase.execute(authors, 'inexistente')).toEqual([]);
   });
+
+  it('consulta el repositorio para la búsqueda remota', () => {
+    const repository = {
+      getAuthors: jest.fn().mockReturnValue([]),
+      getAuthorsByNationality: jest.fn().mockReturnValue([]),
+      getAuthorById: jest.fn().mockReturnValue([]),
+      searchAuthors: jest.fn().mockReturnValue([]),
+    };
+    const remoteUseCase = new SearchAuthorsByNameUseCase(repository);
+
+    remoteUseCase.execute('Borges', 3);
+
+    expect(repository.searchAuthors).toHaveBeenCalledWith('Borges', 3);
+  });
+
+  it('rechaza la búsqueda remota sin repositorio', () => {
+    expect(() => useCase.execute('Borges', 3)).toThrow(
+      'AuthorRepository is required for HTTP searching'
+    );
+  });
 });

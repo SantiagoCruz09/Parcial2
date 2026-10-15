@@ -35,4 +35,26 @@ describe('FilterAuthorsByNationalityUseCase', () => {
   it('retorna un arreglo vacío si no hay coincidencias', () => {
     expect(useCase.execute(authors, 'Peruana')).toEqual([]);
   });
+
+  it('consulta el repositorio para el filtro remoto', () => {
+    const repository = {
+      getAuthors: jest.fn().mockReturnValue([]),
+      getAuthorsByNationality: jest.fn().mockReturnValue([]),
+      getAuthorById: jest.fn().mockReturnValue([]),
+      searchAuthors: jest.fn().mockReturnValue([]),
+    };
+    const remoteUseCase = new FilterAuthorsByNationalityUseCase(repository);
+
+    remoteUseCase.execute('Chilena', 3);
+    remoteUseCase.execute('all', 3);
+
+    expect(repository.getAuthorsByNationality).toHaveBeenCalledWith('Chilena', 3);
+    expect(repository.getAuthors).toHaveBeenCalledWith(3);
+  });
+
+  it('rechaza la consulta remota sin repositorio', () => {
+    expect(() => useCase.execute('Chilena', 3)).toThrow(
+      'AuthorRepository is required for HTTP filtering'
+    );
+  });
 });

@@ -58,4 +58,35 @@ describe('HttpLoanRepository', () => {
     expect(req.request.method).toBe('GET');
     req.flush(loans);
   });
+
+  it('consulta préstamos por estado', () => {
+    repository.getLoansByStatus('Activo', 4).subscribe((result) => {
+      expect(result).toEqual(loans);
+    });
+    const req = httpMock.expectOne(
+      `${API_CONFIG.loansApiUrl}/api/loans/status/Activo/4`
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush(loans);
+  });
+
+  it('consulta el detalle de un préstamo', () => {
+    repository.getLoanById(1).subscribe((result) => {
+      expect(result).toEqual(loans[0]);
+    });
+    const req = httpMock.expectOne(
+      `${API_CONFIG.loansApiUrl}/api/loans/detail/1`
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush(loans[0]);
+  });
+
+  it('consulta préstamos por usuario', () => {
+    repository.searchLoans('Ana', 4).subscribe((result) => {
+      expect(result).toEqual(loans);
+    });
+    const req = httpMock.expectOne(`${API_CONFIG.loansApiUrl}/api/loans/4`);
+    expect(req.request.method).toBe('GET');
+    req.flush(loans);
+  });
 });

@@ -39,4 +39,24 @@ describe('SearchBooksByTitleUseCase', () => {
   it('retorna un arreglo vacío si no hay coincidencias', () => {
     expect(useCase.execute(books, 'inexistente')).toEqual([]);
   });
+
+  it('consulta el repositorio para la búsqueda remota', () => {
+    const repository = {
+      getBooks: jest.fn().mockReturnValue([]),
+      getBooksByGenre: jest.fn().mockReturnValue([]),
+      getBookById: jest.fn().mockReturnValue([]),
+      searchBooks: jest.fn().mockReturnValue([]),
+    };
+    const remoteUseCase = new SearchBooksByTitleUseCase(repository);
+
+    remoteUseCase.execute('soledad', 3);
+
+    expect(repository.searchBooks).toHaveBeenCalledWith('soledad', 3);
+  });
+
+  it('rechaza la búsqueda remota sin repositorio', () => {
+    expect(() => useCase.execute('soledad', 3)).toThrow(
+      'BookRepository is required for HTTP searching'
+    );
+  });
 });

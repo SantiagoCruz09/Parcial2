@@ -39,4 +39,24 @@ describe('SearchLoansByUserUseCase', () => {
   it('retorna un arreglo vacío si no hay coincidencias', () => {
     expect(useCase.execute(loans, 'inexistente')).toEqual([]);
   });
+
+  it('consulta el repositorio para la búsqueda remota', () => {
+    const repository = {
+      getLoans: jest.fn().mockReturnValue([]),
+      getLoansByStatus: jest.fn().mockReturnValue([]),
+      getLoanById: jest.fn().mockReturnValue([]),
+      searchLoans: jest.fn().mockReturnValue([]),
+    };
+    const remoteUseCase = new SearchLoansByUserUseCase(repository);
+
+    remoteUseCase.execute('Ana', 3);
+
+    expect(repository.searchLoans).toHaveBeenCalledWith('Ana', 3);
+  });
+
+  it('rechaza la búsqueda remota sin repositorio', () => {
+    expect(() => useCase.execute('Ana', 3)).toThrow(
+      'LoanRepository is required for HTTP searching'
+    );
+  });
 });

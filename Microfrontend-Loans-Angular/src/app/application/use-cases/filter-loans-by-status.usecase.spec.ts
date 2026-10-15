@@ -39,4 +39,26 @@ describe('FilterLoansByStatusUseCase', () => {
   it('retorna un arreglo vacío si no hay coincidencias', () => {
     expect(useCase.execute(loans, 'Vencido')).toEqual([]);
   });
+
+  it('consulta el repositorio para el filtro remoto', () => {
+    const repository = {
+      getLoans: jest.fn().mockReturnValue([]),
+      getLoansByStatus: jest.fn().mockReturnValue([]),
+      getLoanById: jest.fn().mockReturnValue([]),
+      searchLoans: jest.fn().mockReturnValue([]),
+    };
+    const remoteUseCase = new FilterLoansByStatusUseCase(repository);
+
+    remoteUseCase.execute('Activo', 3);
+    remoteUseCase.execute('all', 3);
+
+    expect(repository.getLoansByStatus).toHaveBeenCalledWith('Activo', 3);
+    expect(repository.getLoans).toHaveBeenCalledWith(3);
+  });
+
+  it('rechaza la consulta remota sin repositorio', () => {
+    expect(() => useCase.execute('Activo', 3)).toThrow(
+      'LoanRepository is required for HTTP filtering'
+    );
+  });
 });

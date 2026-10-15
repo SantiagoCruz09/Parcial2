@@ -39,4 +39,26 @@ describe('FilterBooksByGenreUseCase', () => {
   it('retorna un arreglo vacío si no hay coincidencias', () => {
     expect(useCase.execute(books, 'Ensayo')).toEqual([]);
   });
+
+  it('consulta el repositorio para el filtro remoto', () => {
+    const repository = {
+      getBooks: jest.fn().mockReturnValue([]),
+      getBooksByGenre: jest.fn().mockReturnValue([]),
+      getBookById: jest.fn().mockReturnValue([]),
+      searchBooks: jest.fn().mockReturnValue([]),
+    };
+    const remoteUseCase = new FilterBooksByGenreUseCase(repository);
+
+    remoteUseCase.execute('Novela', 3);
+    remoteUseCase.execute('all', 3);
+
+    expect(repository.getBooksByGenre).toHaveBeenCalledWith('Novela', 3);
+    expect(repository.getBooks).toHaveBeenCalledWith(3);
+  });
+
+  it('rechaza la consulta remota sin repositorio', () => {
+    expect(() => useCase.execute('Novela', 3)).toThrow(
+      'BookRepository is required for HTTP filtering'
+    );
+  });
 });

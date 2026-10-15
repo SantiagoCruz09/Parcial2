@@ -56,4 +56,35 @@ describe('HttpAuthorRepository', () => {
     expect(req.request.method).toBe('GET');
     req.flush(authors);
   });
+
+  it('consulta autores por nacionalidad', () => {
+    repository.getAuthorsByNationality('Colombiana', 4).subscribe((result) => {
+      expect(result).toEqual(authors);
+    });
+    const req = httpMock.expectOne(
+      `${API_CONFIG.authorsApiUrl}/api/authors/nationality/Colombiana/4`
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush(authors);
+  });
+
+  it('consulta el detalle de un autor', () => {
+    repository.getAuthorById(1).subscribe((result) => {
+      expect(result).toEqual(authors[0]);
+    });
+    const req = httpMock.expectOne(
+      `${API_CONFIG.authorsApiUrl}/api/authors/detail/1`
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush(authors[0]);
+  });
+
+  it('consulta autores por nombre', () => {
+    repository.searchAuthors('Isabel', 4).subscribe((result) => {
+      expect(result).toEqual(authors);
+    });
+    const req = httpMock.expectOne(`${API_CONFIG.authorsApiUrl}/api/authors/4`);
+    expect(req.request.method).toBe('GET');
+    req.flush(authors);
+  });
 });

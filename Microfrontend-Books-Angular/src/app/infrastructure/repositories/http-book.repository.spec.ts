@@ -58,4 +58,35 @@ describe('HttpBookRepository', () => {
     expect(req.request.method).toBe('GET');
     req.flush(books);
   });
+
+  it('consulta libros por género', () => {
+    repository.getBooksByGenre('Novela', 4).subscribe((result) => {
+      expect(result).toEqual(books);
+    });
+    const req = httpMock.expectOne(
+      `${API_CONFIG.booksApiUrl}/api/books/genre/Novela/4`
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush(books);
+  });
+
+  it('consulta el detalle de un libro', () => {
+    repository.getBookById(1).subscribe((result) => {
+      expect(result).toEqual(books[0]);
+    });
+    const req = httpMock.expectOne(
+      `${API_CONFIG.booksApiUrl}/api/books/detail/1`
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush(books[0]);
+  });
+
+  it('consulta libros por título', () => {
+    repository.searchBooks('Quijote', 4).subscribe((result) => {
+      expect(result).toEqual(books);
+    });
+    const req = httpMock.expectOne(`${API_CONFIG.booksApiUrl}/api/books/4`);
+    expect(req.request.method).toBe('GET');
+    req.flush(books);
+  });
 });
