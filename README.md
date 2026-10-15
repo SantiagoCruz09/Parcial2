@@ -32,14 +32,14 @@ Todos los componentes aplican separación por capas (dominio, aplicación, infra
 | Microservice Books | Node.js + Express | 3001 | ✅ Estructura creada |
 | Microservice Authors | Spring Boot | 3002 | ✅ Estructura creada |
 | Microservice Loans | Node.js + Express | 3003 | ✅ Estructura creada |
-| Host (Client-Host-Angular) | Angular | 4200 | ⏳ Pendiente migrar a los nuevos dominios |
+| Host (Client-Host-Angular) | Angular | 4200 | ✅ Rutas y navbar configurados |
 | Microfrontend Books | Angular | 4201 | ✅ Implementado (consume MS Books :3001) |
 | Microfrontend Authors | Angular | 4202 | ✅ Implementado (consume MS Authors :3002) |
-| Microfrontend Loans | Angular | 4203 | ⏳ Pendiente |
+| Microfrontend Loans | Angular | 4203 | ✅ Implementado (consume MS Loans :3003) |
 
-> Nota: el host ya tiene configuradas las rutas `/books`, `/authors` y `/loans`
-> apuntando a los remotos `4201`, `4202` y `4203`; funcionarán cuando se creen
-> los microfrontends correspondientes.
+> Nota: el host tiene configuradas las rutas `/books`, `/authors` y `/loans`
+> apuntando a los remotos `4201`, `4202` y `4203`. Los tres microfrontends
+> están implementados con Module Federation y Clean Architecture.
 
 ## 🔌 API de cada microservicio
 
@@ -108,6 +108,13 @@ npm run start
 ```bash
 # Microfrontend Authors -> http://localhost:4202  (remoteEntry: /remoteEntry.js)
 cd Microfrontend-Authors-Angular
+npm install
+npm run start
+```
+
+```bash
+# Microfrontend Loans -> http://localhost:4203  (remoteEntry: /remoteEntry.js)
+cd Microfrontend-Loans-Angular
 npm install
 npm run start
 ```
@@ -182,5 +189,26 @@ src/app
 - **Módulo federado:** `mf-authors`
 - **Módulo expuesto:** `./AuthorsPage` (`src/app/presentation/pages/authors/authors.page.ts`)
 - **Microservicio consumido:** `http://localhost:3002` (`GET /api/authors/{count}`)
+
+### Microfrontend Loans (Angular + Module Federation)
+
+```
+src/app
+├── domain          # modelos y contratos de repositorio (núcleo)
+│   ├── models
+│   └── repositories
+├── application     # casos de uso
+│   └── use-cases   # GetLoans, FilterLoansByStatus, SearchLoansByUser
+├── infrastructure  # adaptadores HTTP y configuración
+│   ├── config
+│   └── repositories
+└── presentation    # componentes y páginas
+    ├── components
+    └── pages
+```
+
+- **Módulo federado:** `mf-loans`
+- **Módulo expuesto:** `./LoansPage` (`src/app/presentation/pages/loans/loans.page.ts`)
+- **Microservicio consumido:** `http://localhost:3003` (`GET /api/loans/{count}`)
 
 
