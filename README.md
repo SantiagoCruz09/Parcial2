@@ -1,223 +1,122 @@
-# 🧪 Taller: Microfrontends y Microservices en Angular y NodeJS
+# Parcial II: Microfrontends y Clean Architecture
 
-- Este proyecto fue generado utilizando [Angular CLI](https://github.com/angular/angular-cli) 20.3.14.
-- El objetivo es practicar una arquitectura distribuida de microfrontends (Angular + Module Federation)
-  integrada con microservicios (Node.js / Spring Boot) aplicando **Arquitectura Limpia (Clean Architecture)**.
+Monorepo con un host Angular, tres microfrontends federados y tres microservicios REST.
+Cada microfrontend usa el microservicio que le corresponde y separa dominio, aplicación,
+infraestructura y presentación.
 
-## 🏗️ Arquitectura
+## Estructura
 
+- `Client-Host-Angular`: host y navegación.
+- `Microfrontend-Books-Angular`, `Microfrontend-Authors-Angular`, `Microfrontend-Loans-Angular`: remotos Angular.
+- `Microservice-Books-NodeJS`, `Microservice-Loans-NodeJS`: APIs Node.js.
+- `Microservice-Authors-SpringBoot`: API Spring Boot.
+
+## Requisitos
+
+- Node.js 24 o superior y npm.
+- Java 17 o superior.
+- El microservicio Authors usa el Maven Wrapper incluido.
+
+## Instalación
+
+Ejecutar `npm install` dentro de cada una de estas seis carpetas:
+
+```text
+Client-Host-Angular
+Microfrontend-Books-Angular
+Microfrontend-Authors-Angular
+Microfrontend-Loans-Angular
+Microservice-Books-NodeJS
+Microservice-Loans-NodeJS
 ```
-Host (Client-Host-Angular)
-  ├── MF1 Books   ──► MS1 Books   (Node.js)        :3001
-  ├── MF2 Authors ──► MS2 Authors (Spring Boot)    :3002
-  └── MF3 Loans   ──► MS3 Loans   (Node.js)        :3003
-```
 
-Cada microfrontend consume **exclusivamente** su microservicio asignado mediante API REST.
-Todos los componentes aplican separación por capas (dominio, aplicación, infraestructura, presentación).
+En Windows se puede usar `npm install` desde PowerShell. En Mac/Linux se usa el mismo comando.
 
-## 📋 Requisitos Previos
+## Puertos
 
-- Node.js
-- npm
-- Angular CLI
-- Java 17 (para el microservicio Spring Boot)
-- Git
-- Visual Studio Code
+| Aplicación | Tecnología | Puerto |
+| --- | --- | ---: |
+| Client-Host-Angular | Angular | 4200 |
+| Microfrontend-Books-Angular | Angular | 4201 |
+| Microfrontend-Authors-Angular | Angular | 4202 |
+| Microfrontend-Loans-Angular | Angular | 4203 |
+| Microservice-Books-NodeJS | Node.js/Express | 3001 |
+| Microservice-Authors-SpringBoot | Spring Boot | 3002 |
+| Microservice-Loans-NodeJS | Node.js/Express | 3003 |
 
-## 🧩 Estado del proyecto
+| Microfrontend | Microservicio consumido | Puerto |
+| --- | --- | ---: |
+| Books | Microservice-Books-NodeJS | 3001 |
+| Authors | Microservice-Authors-SpringBoot | 3002 |
+| Loans | Microservice-Loans-NodeJS | 3003 |
 
-| Componente | Tecnología | Puerto | Estado |
-| --- | --- | --- | --- |
-| Microservice Books | Node.js + Express | 3001 | ✅ Estructura creada |
-| Microservice Authors | Spring Boot | 3002 | ✅ Estructura creada |
-| Microservice Loans | Node.js + Express | 3003 | ✅ Estructura creada |
-| Host (Client-Host-Angular) | Angular | 4200 | ✅ Rutas y navbar configurados |
-| Microfrontend Books | Angular | 4201 | ✅ Implementado (consume MS Books :3001) |
-| Microfrontend Authors | Angular | 4202 | ✅ Implementado (consume MS Authors :3002) |
-| Microfrontend Loans | Angular | 4203 | ✅ Implementado (consume MS Loans :3003) |
+## Ejecución
 
-> Nota: el host tiene configuradas las rutas `/books`, `/authors` y `/loans`
-> apuntando a los remotos `4201`, `4202` y `4203`. Los tres microfrontends
-> están implementados con Module Federation y Clean Architecture.
+El orden es: microservicios, microfrontends y host. Cada comando se ejecuta en una terminal
+separada.
 
-## 🔌 API de cada microservicio
-
-### Microservice-Books-NodeJS (Node.js)
-- Servicio: `http://localhost:3001`
-- Swagger: `http://localhost:3001/api/docs`
-- Endpoints:
-  - `GET http://localhost:3001/api/books/{countBooks}` — listado de libros
-  - `GET http://localhost:3001/api/books/detail/{id}` — libro por id
-  - `GET http://localhost:3001/api/books/genre/{genre}/{countBooks}` — libros por género
-
-### Microservice-Authors-SpringBoot (Spring Boot)
-- Servicio: `http://localhost:3002`
-- Swagger UI: `http://localhost:3002/api/docs`
-- OpenAPI JSON: `http://localhost:3002/v3/api-docs`
-- Endpoints:
-  - `GET http://localhost:3002/api/authors/{countAuthors}` — listado de autores
-  - `GET http://localhost:3002/api/authors/detail/{authorId}` — autor por id
-  - `GET http://localhost:3002/api/authors/nationality/{nationality}/{countAuthors}` — autores por nacionalidad
-
-### Microservice-Loans-NodeJS (Node.js)
-- Servicio: `http://localhost:3003`
-- Swagger: `http://localhost:3003/api/docs`
-- Endpoints:
-  - `GET http://localhost:3003/api/loans/{countLoans}` — listado de préstamos
-  - `GET http://localhost:3003/api/loans/detail/{id}` — préstamo por id
-  - `GET http://localhost:3003/api/loans/status/{status}/{countLoans}` — préstamos por estado
-
-## 🚀 Ejecución
-
-### Instalar dependencias
+Mac/Linux:
 
 ```bash
-# Microservicio Books
-cd Microservice-Books-NodeJS
-npm i
-
-# Microservicio Loans
-cd ../Microservice-Loans-NodeJS
-npm i
+cd Microservice-Books-NodeJS && npm start
+cd Microservice-Authors-SpringBoot && ./mvnw spring-boot:run
+cd Microservice-Loans-NodeJS && npm start
+cd Microfrontend-Books-Angular && npm start
+cd Microfrontend-Authors-Angular && npm start
+cd Microfrontend-Loans-Angular && npm start
+cd Client-Host-Angular && npm start
 ```
 
-El microservicio Spring Boot usa el Maven Wrapper incluido (no requiere Maven instalado).
+Windows PowerShell usa `npm start` para Node/Angular y este comando para Authors:
 
-### Ejecutar los microservicios
-
-```bash
-# Books  -> http://localhost:3001
-cd Microservice-Books-NodeJS
-npm run start
-
-# Loans  -> http://localhost:3003
-cd Microservice-Loans-NodeJS
-npm run start
-```
-
-```bash
-# Authors (Spring Boot) -> http://localhost:3002
+```powershell
 cd Microservice-Authors-SpringBoot
-./mvnw spring-boot:run
+.\mvnw.cmd spring-boot:run
 ```
 
-### Ejecutar los microfrontends
+El host queda en `http://localhost:4200`. Los remotos exponen `remoteEntry.js` en sus
+respectivos puertos.
 
-Cada microfrontend se ejecuta de forma independiente y expone su `remoteEntry.js`
-para que el host lo consuma vía Module Federation.
+## APIs y Swagger
+
+- Books: `http://localhost:3001/api/docs`
+- Authors: `http://localhost:3002/swagger-ui/index.html`
+- Loans: `http://localhost:3003/api/docs`
+
+Endpoints principales:
+
+- Books: `GET /api/books/{countBooks}`, `GET /api/books/genre/{genre}/{countBooks}`,
+  `GET /api/books/detail/{id}`.
+- Authors: `GET /api/authors/{countAuthors}`,
+  `GET /api/authors/nationality/{nationality}/{countAuthors}`,
+  `GET /api/authors/detail/{authorId}`.
+- Loans: `GET /api/loans/{countLoans}`,
+  `GET /api/loans/status/{status}/{countLoans}`, `GET /api/loans/detail/{id}`.
+
+## Pruebas, build y documentación
+
+En cada proyecto Angular:
 
 ```bash
-# Microfrontend Books -> http://localhost:4201  (remoteEntry: /remoteEntry.js)
-cd Microfrontend-Books-Angular
-npm install
-npm run start
+npm test -- --runInBand
+npm run test:coverage
+npm run build
+npm run docs:coverage
 ```
+
+En Books y Loans:
 
 ```bash
-# Microfrontend Authors -> http://localhost:4202  (remoteEntry: /remoteEntry.js)
-cd Microfrontend-Authors-Angular
-npm install
-npm run start
+npm test
+npm run build
+npm run typecheck
 ```
+
+En Authors:
 
 ```bash
-# Microfrontend Loans -> http://localhost:4203  (remoteEntry: /remoteEntry.js)
-cd Microfrontend-Loans-Angular
-npm install
-npm run start
+./mvnw test
 ```
 
-Pruebas unitarias (Jest) de los microfrontends:
-
-```bash
-cd Microfrontend-Books-Angular
-npm test              # ejecuta las pruebas con cobertura
-npm run test:coverage # reporte de cobertura
-```
-
-## 🗂️ Estructura Clean Architecture (microservicios)
-
-```
-src
-├── config          # variables de entorno, Swagger
-├── domain          # modelos, interfaces, errores (núcleo)
-│   ├── erros
-│   └── interfaces
-└── presentation    # servidor, rutas y módulos (controladores/servicios)
-```
-
-En Spring Boot:
-
-```
-src/main/java/com/uceva/authors
-├── domain          # modelo y contratos de repositorio
-├── application     # casos de uso y servicios
-├── infrastructure  # repositorios y configuración (CORS)
-└── presentation    # controladores REST
-```
-
-### Microfrontend Books (Angular + Module Federation)
-
-```
-src/app
-├── domain          # modelos y contratos de repositorio (núcleo)
-│   ├── models
-│   └── repositories
-├── application     # casos de uso
-│   └── use-cases   # GetBooks, FilterBooksByGenre, SearchBooksByTitle
-├── infrastructure  # adaptadores HTTP y configuración
-│   ├── config
-│   └── repositories
-└── presentation    # componentes y páginas
-    ├── components
-    └── pages
-```
-
-- **Módulo federado:** `mf-books`
-- **Módulo expuesto:** `./BooksPage` (`src/app/presentation/pages/books/books.page.ts`)
-- **Microservicio consumido:** `http://localhost:3001` (`GET /api/books/{count}`)
-
-### Microfrontend Authors (Angular + Module Federation)
-
-```
-src/app
-├── domain          # modelos y contratos de repositorio (núcleo)
-│   ├── models
-│   └── repositories
-├── application     # casos de uso
-│   └── use-cases   # GetAuthors, FilterAuthorsByNationality, SearchAuthorsByName
-├── infrastructure  # adaptadores HTTP y configuración
-│   ├── config
-│   └── repositories
-└── presentation    # componentes y páginas
-    ├── components
-    └── pages
-```
-
-- **Módulo federado:** `mf-authors`
-- **Módulo expuesto:** `./AuthorsPage` (`src/app/presentation/pages/authors/authors.page.ts`)
-- **Microservicio consumido:** `http://localhost:3002` (`GET /api/authors/{count}`)
-
-### Microfrontend Loans (Angular + Module Federation)
-
-```
-src/app
-├── domain          # modelos y contratos de repositorio (núcleo)
-│   ├── models
-│   └── repositories
-├── application     # casos de uso
-│   └── use-cases   # GetLoans, FilterLoansByStatus, SearchLoansByUser
-├── infrastructure  # adaptadores HTTP y configuración
-│   ├── config
-│   └── repositories
-└── presentation    # componentes y páginas
-    ├── components
-    └── pages
-```
-
-- **Módulo federado:** `mf-loans`
-- **Módulo expuesto:** `./LoansPage` (`src/app/presentation/pages/loans/loans.page.ts`)
-- **Microservicio consumido:** `http://localhost:3003` (`GET /api/loans/{count}`)
-
-
+Para generar la documentación Compodoc sin validar el porcentaje se usa `npm run docs`.
+La salida se escribe en `documentation/` y no se versiona.
