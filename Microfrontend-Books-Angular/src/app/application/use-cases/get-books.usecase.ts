@@ -12,6 +12,8 @@ import { BookRepository } from '../../domain/repositories/book.repository';
  */
 export class GetBooksUseCase {
   /**
+   * Inicializa el caso de uso.
+   *
    * @param repository Puerto de acceso a libros
    */
   constructor(private readonly repository: BookRepository) {}

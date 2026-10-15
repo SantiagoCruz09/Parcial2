@@ -16,6 +16,8 @@ import { API_CONFIG } from '../config/api.config';
 @Injectable()
 export class HttpBookRepository extends BookRepository {
   /**
+   * Inicializa el adaptador HTTP.
+   *
    * @param http Cliente HTTP de Angular
    */
   constructor(private readonly http: HttpClient) {
@@ -34,16 +36,19 @@ export class HttpBookRepository extends BookRepository {
     );
   }
 
+  /** Consulta libros filtrados por género. */
   override getBooksByGenre(genre: string, count: number): Observable<Book[]> {
     return this.http.get<Book[]>(
       `${API_CONFIG.booksApiUrl}/api/books/genre/${encodeURIComponent(genre)}/${count}`
     );
   }
 
+  /** Consulta un libro por identificador. */
   override getBookById(id: number): Observable<Book> {
     return this.http.get<Book>(`${API_CONFIG.booksApiUrl}/api/books/detail/${id}`);
   }
 
+  /** Consulta libros relacionados con un título. */
   override searchBooks(title: string, count: number): Observable<Book[]> {
     return this.getBooks(count).pipe(
       map((books) => {

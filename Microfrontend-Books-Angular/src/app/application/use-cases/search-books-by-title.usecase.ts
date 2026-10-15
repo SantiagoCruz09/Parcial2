@@ -11,6 +11,7 @@ import { BookRepository } from '../../domain/repositories/book.repository';
  * Un término vacío desactiva la búsqueda.
  */
 export class SearchBooksByTitleUseCase {
+  /** Crea el caso de uso con el repositorio opcional para consultas HTTP. */
   constructor(private readonly repository?: BookRepository) {}
   /**
    * Ejecuta el caso de uso.
@@ -19,8 +20,11 @@ export class SearchBooksByTitleUseCase {
    * @param term Término de búsqueda
    * @returns Nuevo arreglo con los libros que coinciden
    */
+  /** Busca en memoria por título. */
   execute(books: Book[], term: string): Book[];
+  /** Consulta al servicio libros relacionados con un título. */
   execute(term: string, count: number): Observable<Book[]>;
+  /** Ejecuta la variante local o remota según los argumentos recibidos. */
   execute(
     booksOrTerm: Book[] | string,
     termOrCount: string | number

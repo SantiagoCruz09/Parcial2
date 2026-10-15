@@ -18,8 +18,12 @@ export abstract class BookRepository {
    * @param count Cantidad de libros a obtener
    * @returns Observable con el arreglo de libros
    */
+  /** Consulta el listado de libros. */
   abstract getBooks(count: number): Observable<Book[]>;
+  /** Consulta libros filtrados por género. */
   abstract getBooksByGenre(genre: string, count: number): Observable<Book[]>;
+  /** Consulta un libro por identificador. */
   abstract getBookById(id: number): Observable<Book>;
+  /** Consulta libros relacionados con un título. */
   abstract searchBooks(title: string, count: number): Observable<Book[]>;
 }

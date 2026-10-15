@@ -10,6 +10,7 @@ import { BookRepository } from '../../domain/repositories/book.repository';
  * el género seleccionado. El valor `'all'` desactiva el filtro.
  */
 export class FilterBooksByGenreUseCase {
+  /** Crea el caso de uso con el repositorio opcional para consultas HTTP. */
   constructor(private readonly repository?: BookRepository) {}
   /**
    * Ejecuta el caso de uso.
@@ -18,8 +19,11 @@ export class FilterBooksByGenreUseCase {
    * @param genre Género por el que filtrar o `'all'` para todos
    * @returns Nuevo arreglo con los libros que cumplen el criterio
    */
+  /** Filtra en memoria una colección de libros. */
   execute(books: Book[], genre: BookGenreFilter): Book[];
+  /** Consulta al servicio los libros de un género. */
   execute(genre: BookGenreFilter, count: number): Observable<Book[]>;
+  /** Ejecuta la variante local o remota según los argumentos recibidos. */
   execute(
     booksOrGenre: Book[] | BookGenreFilter,
     genreOrCount: BookGenreFilter | number
