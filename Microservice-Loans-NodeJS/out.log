@@ -1,6 +1,0 @@
-
-> microservice-loans-nodejs@1.0.0 start
-> tsnd --respawn --clear src/app.ts
-
-[INFO] 10:01:22 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 5.9.3)
-cServer Loans Running on Port 3003
