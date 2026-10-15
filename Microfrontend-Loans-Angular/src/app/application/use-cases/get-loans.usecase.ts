@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Loan } from '../../domain/models/loan.model';
 import { LoanRepository } from '../../domain/repositories/loan.repository';
@@ -11,7 +10,6 @@ import { LoanRepository } from '../../domain/repositories/loan.repository';
  * `LoanRepository`, manteniendo la capa de aplicación
  * independiente de la infraestructura.
  */
-@Injectable()
 export class GetLoansUseCase {
   /**
    * @param repository Puerto de acceso a préstamos

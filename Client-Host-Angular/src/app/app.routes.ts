@@ -1,5 +1,17 @@
+import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
 import { loadRemoteModule } from '@angular-architects/module-federation';
+
+@Component({
+  standalone: true,
+  template: `
+    <section class="container py-5 text-center">
+      <h2>Microfrontend no disponible</h2>
+      <p class="text-body-secondary">No fue posible cargar este módulo. Intenta nuevamente más tarde.</p>
+    </section>
+  `,
+})
+export class RemoteFallbackComponent {}
 
 /**
  * Definición de las rutas principales de la aplicación.
@@ -24,7 +36,7 @@ export const routes: Routes = [
         type: 'module',
         remoteEntry: 'http://localhost:4201/remoteEntry.js',
         exposedModule: './BooksPage',
-      }).then((m) => m.BooksPage),
+      }).then((m) => m.BooksPage).catch(() => RemoteFallbackComponent),
   },
 
   /**
@@ -37,7 +49,7 @@ export const routes: Routes = [
         type: 'module',
         remoteEntry: 'http://localhost:4202/remoteEntry.js',
         exposedModule: './AuthorsPage',
-      }).then((m) => m.AuthorsPage),
+      }).then((m) => m.AuthorsPage).catch(() => RemoteFallbackComponent),
   },
 
   /**
@@ -50,7 +62,7 @@ export const routes: Routes = [
         type: 'module',
         remoteEntry: 'http://localhost:4203/remoteEntry.js',
         exposedModule: './LoansPage',
-      }).then((m) => m.LoansPage),
+      }).then((m) => m.LoansPage).catch(() => RemoteFallbackComponent),
   },
 
   /**

@@ -19,4 +19,7 @@ export abstract class BookRepository {
    * @returns Observable con el arreglo de libros
    */
   abstract getBooks(count: number): Observable<Book[]>;
+  abstract getBooksByGenre(genre: string, count: number): Observable<Book[]>;
+  abstract getBookById(id: number): Observable<Book>;
+  abstract searchBooks(title: string, count: number): Observable<Book[]>;
 }

@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FilterBooksByGenreUseCase } from '../../../application/use-cases/filter-books-by-genre.usecase';
@@ -32,10 +33,14 @@ import { BookCard } from '../../components/book-card/book-card';
   templateUrl: './books.page.html',
   styleUrl: './books.page.scss',
   providers: [
-    GetBooksUseCase,
-    FilterBooksByGenreUseCase,
-    SearchBooksByTitleUseCase,
-    { provide: BookRepository, useClass: HttpBookRepository },
+    { provide: GetBooksUseCase, useClass: GetBooksUseCase, deps: [BookRepository] },
+    { provide: FilterBooksByGenreUseCase, useClass: FilterBooksByGenreUseCase, deps: [BookRepository] },
+    { provide: SearchBooksByTitleUseCase, useClass: SearchBooksByTitleUseCase, deps: [BookRepository] },
+    {
+      provide: BookRepository,
+      useFactory: (http: HttpClient) => new HttpBookRepository(http),
+      deps: [HttpClient],
+    },
   ],
 })
 export class BooksPage implements OnInit {
@@ -118,6 +123,11 @@ export class BooksPage implements OnInit {
    */
   onGenreChange(value: string): void {
     this.genre.set(value as BookGenreFilter);
+    this.loading.set(true);
+    this.filterByGenre.execute(this.genre(), this.count()).subscribe({
+      next: (books) => { this.books.set(books); this.loading.set(false); },
+      error: () => { this.error.set('No se pudieron filtrar los libros.'); this.loading.set(false); },
+    });
   }
 
   /**
@@ -127,6 +137,11 @@ export class BooksPage implements OnInit {
    */
   onSearchChange(value: string): void {
     this.searchTerm.set(value);
+    this.loading.set(true);
+    this.searchByTitle.execute(value, this.count()).subscribe({
+      next: (books) => { this.books.set(books); this.loading.set(false); },
+      error: () => { this.error.set('No se pudieron buscar los libros.'); this.loading.set(false); },
+    });
   }
 
   /**

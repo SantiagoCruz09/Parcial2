@@ -19,4 +19,10 @@ export abstract class AuthorRepository {
    * @returns Observable con el arreglo de autores
    */
   abstract getAuthors(count: number): Observable<Author[]>;
+  abstract getAuthorsByNationality(
+    nationality: string,
+    count: number
+  ): Observable<Author[]>;
+  abstract getAuthorById(id: number): Observable<Author>;
+  abstract searchAuthors(name: string, count: number): Observable<Author[]>;
 }

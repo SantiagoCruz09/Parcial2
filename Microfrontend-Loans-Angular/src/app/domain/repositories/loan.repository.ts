@@ -19,4 +19,7 @@ export abstract class LoanRepository {
    * @returns Observable con el arreglo de préstamos
    */
   abstract getLoans(count: number): Observable<Loan[]>;
+  abstract getLoansByStatus(status: string, count: number): Observable<Loan[]>;
+  abstract getLoanById(id: number): Observable<Loan>;
+  abstract searchLoans(userName: string, count: number): Observable<Loan[]>;
 }

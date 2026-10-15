@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FilterAuthorsByNationalityUseCase } from '../../../application/use-cases/filter-authors-by-nationality.usecase';
@@ -31,10 +32,14 @@ import { AuthorCard } from '../../components/author-card/author-card';
   templateUrl: './authors.page.html',
   styleUrl: './authors.page.scss',
   providers: [
-    GetAuthorsUseCase,
-    FilterAuthorsByNationalityUseCase,
-    SearchAuthorsByNameUseCase,
-    { provide: AuthorRepository, useClass: HttpAuthorRepository },
+    { provide: GetAuthorsUseCase, useClass: GetAuthorsUseCase, deps: [AuthorRepository] },
+    { provide: FilterAuthorsByNationalityUseCase, useClass: FilterAuthorsByNationalityUseCase, deps: [AuthorRepository] },
+    { provide: SearchAuthorsByNameUseCase, useClass: SearchAuthorsByNameUseCase, deps: [AuthorRepository] },
+    {
+      provide: AuthorRepository,
+      useFactory: (http: HttpClient) => new HttpAuthorRepository(http),
+      deps: [HttpClient],
+    },
   ],
 })
 export class AuthorsPage implements OnInit {
@@ -121,6 +126,11 @@ export class AuthorsPage implements OnInit {
    */
   onNationalityChange(value: string): void {
     this.nationality.set(value as NationalityFilter);
+    this.loading.set(true);
+    this.filterByNationality.execute(this.nationality(), this.count()).subscribe({
+      next: (authors) => { this.authors.set(authors); this.loading.set(false); },
+      error: () => { this.error.set('No se pudieron filtrar los autores.'); this.loading.set(false); },
+    });
   }
 
   /**
@@ -130,6 +140,11 @@ export class AuthorsPage implements OnInit {
    */
   onSearchChange(value: string): void {
     this.searchTerm.set(value);
+    this.loading.set(true);
+    this.searchByName.execute(value, this.count()).subscribe({
+      next: (authors) => { this.authors.set(authors); this.loading.set(false); },
+      error: () => { this.error.set('No se pudieron buscar los autores.'); this.loading.set(false); },
+    });
   }
 
   /**

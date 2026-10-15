@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FilterLoansByStatusUseCase } from '../../../application/use-cases/filter-loans-by-status.usecase';
@@ -32,10 +33,14 @@ import { LoanCard } from '../../components/loan-card/loan-card';
   templateUrl: './loans.page.html',
   styleUrl: './loans.page.scss',
   providers: [
-    GetLoansUseCase,
-    FilterLoansByStatusUseCase,
-    SearchLoansByUserUseCase,
-    { provide: LoanRepository, useClass: HttpLoanRepository },
+    { provide: GetLoansUseCase, useClass: GetLoansUseCase, deps: [LoanRepository] },
+    { provide: FilterLoansByStatusUseCase, useClass: FilterLoansByStatusUseCase, deps: [LoanRepository] },
+    { provide: SearchLoansByUserUseCase, useClass: SearchLoansByUserUseCase, deps: [LoanRepository] },
+    {
+      provide: LoanRepository,
+      useFactory: (http: HttpClient) => new HttpLoanRepository(http),
+      deps: [HttpClient],
+    },
   ],
 })
 export class LoansPage implements OnInit {
@@ -118,6 +123,11 @@ export class LoansPage implements OnInit {
    */
   onStatusChange(value: string): void {
     this.status.set(value as LoanStatusFilter);
+    this.loading.set(true);
+    this.filterByStatus.execute(this.status(), this.count()).subscribe({
+      next: (loans) => { this.loans.set(loans); this.loading.set(false); },
+      error: () => { this.error.set('No se pudieron filtrar los préstamos.'); this.loading.set(false); },
+    });
   }
 
   /**
@@ -127,6 +137,11 @@ export class LoansPage implements OnInit {
    */
   onSearchChange(value: string): void {
     this.searchTerm.set(value);
+    this.loading.set(true);
+    this.searchByUser.execute(value, this.count()).subscribe({
+      next: (loans) => { this.loans.set(loans); this.loading.set(false); },
+      error: () => { this.error.set('No se pudieron buscar los préstamos.'); this.loading.set(false); },
+    });
   }
 
   /**

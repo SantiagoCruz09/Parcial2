@@ -85,6 +85,7 @@ describe('BooksPage', () => {
     flushBooks();
 
     fixture.componentInstance.onGenreChange('Poesía');
+    flushBooks();
 
     const visible = fixture.componentInstance.visibleBooks();
     expect(visible).toHaveLength(1);
@@ -96,6 +97,7 @@ describe('BooksPage', () => {
     flushBooks();
 
     fixture.componentInstance.onSearchChange('soledad');
+    flushBooks();
 
     const visible = fixture.componentInstance.visibleBooks();
     expect(visible).toHaveLength(1);

@@ -85,6 +85,7 @@ describe('LoansPage', () => {
     flushLoans();
 
     fixture.componentInstance.onStatusChange('Devuelto');
+    flushLoans();
 
     const visible = fixture.componentInstance.visibleLoans();
     expect(visible).toHaveLength(1);
@@ -96,6 +97,7 @@ describe('LoansPage', () => {
     flushLoans();
 
     fixture.componentInstance.onSearchChange('ana');
+    flushLoans();
 
     const visible = fixture.componentInstance.visibleLoans();
     expect(visible).toHaveLength(1);

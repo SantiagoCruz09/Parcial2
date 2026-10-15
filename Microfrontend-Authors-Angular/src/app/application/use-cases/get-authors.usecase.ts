@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Author } from '../../domain/models/author.model';
 import { AuthorRepository } from '../../domain/repositories/author.repository';
@@ -11,7 +10,6 @@ import { AuthorRepository } from '../../domain/repositories/author.repository';
  * `AuthorRepository`, manteniendo la capa de aplicación
  * independiente de la infraestructura.
  */
-@Injectable()
 export class GetAuthorsUseCase {
   /**
    * @param repository Puerto de acceso a autores

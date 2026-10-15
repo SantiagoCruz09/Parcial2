@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Book } from '../../domain/models/book.model';
 import { BookRepository } from '../../domain/repositories/book.repository';
@@ -11,7 +10,6 @@ import { BookRepository } from '../../domain/repositories/book.repository';
  * `BookRepository`, manteniendo la capa de aplicación
  * independiente de la infraestructura.
  */
-@Injectable()
 export class GetBooksUseCase {
   /**
    * @param repository Puerto de acceso a libros

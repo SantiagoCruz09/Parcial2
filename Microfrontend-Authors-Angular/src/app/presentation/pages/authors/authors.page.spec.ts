@@ -91,6 +91,7 @@ describe('AuthorsPage', () => {
     flushAuthors();
 
     fixture.componentInstance.onNationalityChange('Argentina');
+    flushAuthors();
 
     const visible = fixture.componentInstance.visibleAuthors();
     expect(visible).toHaveLength(1);
@@ -102,6 +103,7 @@ describe('AuthorsPage', () => {
     flushAuthors();
 
     fixture.componentInstance.onSearchChange('borges');
+    flushAuthors();
 
     const visible = fixture.componentInstance.visibleAuthors();
     expect(visible).toHaveLength(1);
