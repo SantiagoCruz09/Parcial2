@@ -16,6 +16,8 @@ import { API_CONFIG } from '../config/api.config';
 @Injectable()
 export class HttpAuthorRepository extends AuthorRepository {
   /**
+   * Inicializa el adaptador HTTP.
+   *
    * @param http Cliente HTTP de Angular
    */
   constructor(private readonly http: HttpClient) {
@@ -34,6 +36,7 @@ export class HttpAuthorRepository extends AuthorRepository {
     );
   }
 
+  /** Consulta autores filtrados por nacionalidad. */
   override getAuthorsByNationality(
     nationality: string,
     count: number
@@ -43,10 +46,12 @@ export class HttpAuthorRepository extends AuthorRepository {
     );
   }
 
+  /** Consulta un autor por identificador. */
   override getAuthorById(id: number): Observable<Author> {
     return this.http.get<Author>(`${API_CONFIG.authorsApiUrl}/api/authors/detail/${id}`);
   }
 
+  /** Consulta autores relacionados con un nombre. */
   override searchAuthors(name: string, count: number): Observable<Author[]> {
     return this.getAuthors(count).pipe(
       map((authors) => {

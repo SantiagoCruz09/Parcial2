@@ -10,6 +10,7 @@ import { AuthorRepository } from '../../domain/repositories/author.repository';
  * la nacionalidad seleccionada. El valor `'all'` desactiva el filtro.
  */
 export class FilterAuthorsByNationalityUseCase {
+  /** Crea el caso de uso con el repositorio opcional para consultas HTTP. */
   constructor(private readonly repository?: AuthorRepository) {}
   /**
    * Ejecuta el caso de uso.
@@ -18,8 +19,11 @@ export class FilterAuthorsByNationalityUseCase {
    * @param nationality Nacionalidad por la que filtrar o `'all'` para todas
    * @returns Nuevo arreglo con los autores que cumplen el criterio
    */
+  /** Filtra en memoria una colección de autores. */
   execute(authors: Author[], nationality: NationalityFilter): Author[];
+  /** Consulta al servicio los autores de una nacionalidad. */
   execute(nationality: NationalityFilter, count: number): Observable<Author[]>;
+  /** Ejecuta la variante local o remota según los argumentos recibidos. */
   execute(
     authorsOrNationality: Author[] | NationalityFilter,
     nationalityOrCount: NationalityFilter | number

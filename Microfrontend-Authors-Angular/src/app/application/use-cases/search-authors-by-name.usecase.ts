@@ -11,6 +11,7 @@ import { AuthorRepository } from '../../domain/repositories/author.repository';
  * Un término vacío desactiva la búsqueda.
  */
 export class SearchAuthorsByNameUseCase {
+  /** Crea el caso de uso con el repositorio opcional para consultas HTTP. */
   constructor(private readonly repository?: AuthorRepository) {}
   /**
    * Ejecuta el caso de uso.
@@ -19,8 +20,11 @@ export class SearchAuthorsByNameUseCase {
    * @param term Término de búsqueda
    * @returns Nuevo arreglo con los autores que coinciden
    */
+  /** Busca en memoria por nombre. */
   execute(authors: Author[], term: string): Author[];
+  /** Consulta al servicio autores relacionados con un nombre. */
   execute(term: string, count: number): Observable<Author[]>;
+  /** Ejecuta la variante local o remota según los argumentos recibidos. */
   execute(
     authorsOrTerm: Author[] | string,
     termOrCount: string | number

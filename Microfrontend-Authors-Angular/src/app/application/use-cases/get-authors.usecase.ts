@@ -12,6 +12,8 @@ import { AuthorRepository } from '../../domain/repositories/author.repository';
  */
 export class GetAuthorsUseCase {
   /**
+   * Inicializa el caso de uso.
+   *
    * @param repository Puerto de acceso a autores
    */
   constructor(private readonly repository: AuthorRepository) {}
