@@ -1,6 +1,8 @@
 package com.uceva.authors.presentation.controller;
 
 import com.uceva.authors.application.usecase.GetAllAuthorsUseCase;
+import com.uceva.authors.application.usecase.GetAuthorByIdUseCase;
+import com.uceva.authors.application.usecase.GetAuthorsByNationalityUseCase;
 import com.uceva.authors.domain.model.Author;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,9 +23,16 @@ import java.util.List;
 public class AuthorController {
 
     private final GetAllAuthorsUseCase getAllAuthorsUseCase;
+    private final GetAuthorByIdUseCase getAuthorByIdUseCase;
+    private final GetAuthorsByNationalityUseCase getAuthorsByNationalityUseCase;
 
-    public AuthorController(GetAllAuthorsUseCase getAllAuthorsUseCase) {
+    public AuthorController(
+            GetAllAuthorsUseCase getAllAuthorsUseCase,
+            GetAuthorByIdUseCase getAuthorByIdUseCase,
+            GetAuthorsByNationalityUseCase getAuthorsByNationalityUseCase) {
         this.getAllAuthorsUseCase = getAllAuthorsUseCase;
+        this.getAuthorByIdUseCase = getAuthorByIdUseCase;
+        this.getAuthorsByNationalityUseCase = getAuthorsByNationalityUseCase;
     }
 
     /**
@@ -36,5 +45,33 @@ public class AuthorController {
     @Operation(summary = "Obtener listado de autores")
     public ResponseEntity<List<Author>> getAllAuthors(@PathVariable int countAuthors) {
         return ResponseEntity.ok(getAllAuthorsUseCase.execute(countAuthors));
+    }
+
+    /**
+     * Obtiene un autor por su identificador.
+     *
+     * @param authorId identificador del autor
+     * @return autor solicitado
+     */
+    @GetMapping("/detail/{authorId}")
+    @Operation(summary = "Obtener un autor por id")
+    public ResponseEntity<Author> getAuthorById(@PathVariable Long authorId) {
+        return ResponseEntity.ok(getAuthorByIdUseCase.execute(authorId));
+    }
+
+    /**
+     * Obtiene un listado de autores por nacionalidad.
+     *
+     * @param nationality  nacionalidad a filtrar
+     * @param countAuthors cantidad de autores a obtener
+     * @return lista de autores de la nacionalidad indicada
+     */
+    @GetMapping("/nationality/{nationality}/{countAuthors}")
+    @Operation(summary = "Obtener autores por nacionalidad")
+    public ResponseEntity<List<Author>> getAuthorsByNationality(
+            @PathVariable String nationality,
+            @PathVariable int countAuthors) {
+        return ResponseEntity.ok(
+                getAuthorsByNationalityUseCase.execute(nationality, countAuthors));
     }
 }

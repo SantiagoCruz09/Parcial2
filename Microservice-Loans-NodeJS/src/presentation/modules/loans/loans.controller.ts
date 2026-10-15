@@ -33,4 +33,44 @@ export class LoansController {
       .then((loans) => res.status(200).json(loans))
       .catch((error) => HandleError.error(error, res));
   };
+
+  /**
+   * Maneja la petición HTTP para obtener un préstamo por su id.
+   *
+   * @param req Objeto de petición de Express
+   * @param res Objeto de respuesta de Express
+   *
+   * @example
+   * ```http
+   * GET /api/loans/detail/5
+   * ```
+   */
+  getLoanById = (req: Request, res: Response): void => {
+    const { id } = req.params;
+
+    this.loansService
+      .getLoanById(Number(id))
+      .then((loan) => res.status(200).json(loan))
+      .catch((error) => HandleError.error(error, res));
+  };
+
+  /**
+   * Maneja la petición HTTP para obtener préstamos por estado.
+   *
+   * @param req Objeto de petición de Express
+   * @param res Objeto de respuesta de Express
+   *
+   * @example
+   * ```http
+   * GET /api/loans/status/Activo/10
+   * ```
+   */
+  getLoansByStatus = (req: Request, res: Response): void => {
+    const { status, countLoans } = req.params;
+
+    this.loansService
+      .getLoansByStatus(status as string, Number(countLoans))
+      .then((loans) => res.status(200).json(loans))
+      .catch((error) => HandleError.error(error, res));
+  };
 }

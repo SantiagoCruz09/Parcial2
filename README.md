@@ -46,18 +46,27 @@ Todos los componentes aplican separación por capas (dominio, aplicación, infra
 ### Microservice-Books-NodeJS (Node.js)
 - Servicio: `http://localhost:3001`
 - Swagger: `http://localhost:3001/api/docs`
-- Endpoint: `GET http://localhost:3001/api/books/{countBooks}`
+- Endpoints:
+  - `GET http://localhost:3001/api/books/{countBooks}` — listado de libros
+  - `GET http://localhost:3001/api/books/detail/{id}` — libro por id
+  - `GET http://localhost:3001/api/books/genre/{genre}/{countBooks}` — libros por género
 
 ### Microservice-Authors-SpringBoot (Spring Boot)
 - Servicio: `http://localhost:3002`
 - Swagger UI: `http://localhost:3002/api/docs`
 - OpenAPI JSON: `http://localhost:3002/v3/api-docs`
-- Endpoint: `GET http://localhost:3002/api/authors/{countAuthors}`
+- Endpoints:
+  - `GET http://localhost:3002/api/authors/{countAuthors}` — listado de autores
+  - `GET http://localhost:3002/api/authors/detail/{authorId}` — autor por id
+  - `GET http://localhost:3002/api/authors/nationality/{nationality}/{countAuthors}` — autores por nacionalidad
 
 ### Microservice-Loans-NodeJS (Node.js)
 - Servicio: `http://localhost:3003`
 - Swagger: `http://localhost:3003/api/docs`
-- Endpoint: `GET http://localhost:3003/api/loans/{countLoans}`
+- Endpoints:
+  - `GET http://localhost:3003/api/loans/{countLoans}` — listado de préstamos
+  - `GET http://localhost:3003/api/loans/detail/{id}` — préstamo por id
+  - `GET http://localhost:3003/api/loans/status/{status}/{countLoans}` — préstamos por estado
 
 ## 🚀 Ejecución
 
