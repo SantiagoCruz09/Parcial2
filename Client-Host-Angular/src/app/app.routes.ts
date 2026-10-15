@@ -12,51 +12,53 @@ import { loadRemoteModule } from '@angular-architects/module-federation';
  * Incluye:
  * - Rutas de navegación principales
  * - Redirección por defecto para rutas no existentes
- *
- * @see {@link UsersPage}
- * @see {@link ProductsPage}
  */
 export const routes: Routes = [
-
   /**
-   * Ruta de usuarios.
-   *
-   * @remarks
-   * Renderiza el componente `UsersPage`, encargado
-   * de mostrar y gestionar el listado de usuarios.
+   * Ruta de libros (Microfrontend Books).
    */
   {
-        path: 'users',
-        loadComponent: () =>
-            loadRemoteModule({
-                type: 'module',
-                remoteEntry: 'http://localhost:4201/remoteEntry.js',
-                exposedModule: './UsersPage',
-        }).then(m => m.UsersPage),
-    },    
+    path: 'books',
+    loadComponent: () =>
+      loadRemoteModule({
+        type: 'module',
+        remoteEntry: 'http://localhost:4201/remoteEntry.js',
+        exposedModule: './BooksPage',
+      }).then((m) => m.BooksPage),
+  },
+
   /**
-   * Ruta de productos.
-   *
-   * @remarks
-   * Renderiza el componente `ProductsPage`, encargado
-   * de mostrar y gestionar el listado de productos.
+   * Ruta de autores (Microfrontend Authors).
    */
-    {
-        path: 'products',
-        loadComponent: () =>
-            loadRemoteModule({
-                type: 'module',
-                remoteEntry: 'http://localhost:4202/remoteEntry.js',
-                exposedModule: './ProductsPage',
-        }).then(m => m.ProductsPage),
-    },
+  {
+    path: 'authors',
+    loadComponent: () =>
+      loadRemoteModule({
+        type: 'module',
+        remoteEntry: 'http://localhost:4202/remoteEntry.js',
+        exposedModule: './AuthorsPage',
+      }).then((m) => m.AuthorsPage),
+  },
+
+  /**
+   * Ruta de préstamos (Microfrontend Loans).
+   */
+  {
+    path: 'loans',
+    loadComponent: () =>
+      loadRemoteModule({
+        type: 'module',
+        remoteEntry: 'http://localhost:4203/remoteEntry.js',
+        exposedModule: './LoansPage',
+      }).then((m) => m.LoansPage),
+  },
 
   /**
    * Ruta comodín.
    *
    * @remarks
    * Captura cualquier ruta no definida y redirige
-   * automáticamente a la ruta de usuarios.
+   * automáticamente a la ruta de libros.
    */
-  { path: '**', redirectTo: 'users' },
+  { path: '**', redirectTo: 'books' },
 ];
