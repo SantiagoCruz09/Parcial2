@@ -32,6 +32,14 @@ class AuthorServiceTest {
     }
 
     @Test
+    void getAuthorByIdReturnsTheSameDataAfterListing() {
+        Author listedAuthor = authorService.execute(1).get(0);
+        Author detailedAuthor = authorService.execute(listedAuthor.id());
+
+        assertEquals(listedAuthor, detailedAuthor);
+    }
+
+    @Test
     void getAuthorsByNationalityReturnsAuthorsOfThatNationality() {
         List<Author> authors = authorService.execute("Colombiana", 2);
 

@@ -23,6 +23,12 @@ describe("Loans use cases", () => {
   it("gets a loan by id", async () => {
     await expect(new GetLoanByIdUseCase(repository).execute(7)).resolves.toMatchObject({ id: 7 });
   });
+
+  it("returns the same loan data from list and detail", async () => {
+    const listedLoan = (await new GetAllLoansUseCase(repository).execute(1))[0]!;
+    const detailedLoan = await new GetLoanByIdUseCase(repository).execute(listedLoan.id);
+    expect(detailedLoan).toEqual(listedLoan);
+  });
 });
 
 describe("Loans endpoints", () => {

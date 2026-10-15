@@ -23,6 +23,12 @@ describe("Books use cases", () => {
   it("gets a book by id", async () => {
     await expect(new GetBookByIdUseCase(repository).execute(7)).resolves.toMatchObject({ id: 7 });
   });
+
+  it("returns the same book data from list and detail", async () => {
+    const listedBook = (await new GetAllBooksUseCase(repository).execute(1))[0]!;
+    const detailedBook = await new GetBookByIdUseCase(repository).execute(listedBook.id);
+    expect(detailedBook).toEqual(listedBook);
+  });
 });
 
 describe("Books endpoints", () => {
