@@ -8,6 +8,8 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "compodoc": "npx compodoc -p tsconfig.doc.json",
+    "docs": "compodoc -p tsconfig.app.json -d documentation",
+    "docs:coverage": "compodoc -p tsconfig.app.json -d documentation --coverageTest 100",
     "run:all": "node node_modules/@angular-architects/module-federation/src/server/mf-dev-server.js"
   },
   "prettier": {
@@ -43,7 +45,7 @@
     "@angular/build": "20.3.12",
     "@angular/cli": "20.3.12",
     "@angular/compiler-cli": "20.3.14",
-    "@compodoc/compodoc": "^1.1.32",
+    "@compodoc/compodoc": "^1.2.1",
     "@types/jest": "30.0.0",
     "@types/node": "24.10.1",
     "jest": "30.2.0",

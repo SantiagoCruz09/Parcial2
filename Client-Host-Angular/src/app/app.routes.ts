@@ -1,17 +1,44 @@
-import { Component } from '@angular/core';
+import { Type } from '@angular/core';
 import { Routes } from '@angular/router';
 import { loadRemoteModule } from '@angular-architects/module-federation';
+import { RemoteFallbackComponent } from './remote-fallback.component';
 
-@Component({
-  standalone: true,
-  template: `
-    <section class="container py-5 text-center">
-      <h2>Microfrontend no disponible</h2>
-      <p class="text-body-secondary">No fue posible cargar este módulo. Intenta nuevamente más tarde.</p>
-    </section>
-  `,
-})
-export class RemoteFallbackComponent {}
+/**
+ * Carga un componente remoto y devuelve una vista alternativa si falla.
+ *
+ * @param remoteEntry URL del archivo de entrada federado
+ * @param exposedModule Nombre del módulo expuesto por el remoto
+ * @returns Promesa con el componente remoto o el fallback
+ */
+function loadRemoteWithFallback(
+  remoteEntry: string,
+  exposedModule: string
+): Promise<Type<unknown>> {
+  return loadRemoteModule({ type: 'module', remoteEntry, exposedModule })
+    .then(
+      (module) =>
+        module[exposedModule.replace('./', '')] as Type<unknown>
+    )
+    .catch(() => RemoteFallbackComponent);
+}
+
+/** Carga la página remota de libros. */
+const loadBooksPage = () =>
+  loadRemoteWithFallback('http://localhost:4201/remoteEntry.js', './BooksPage');
+
+/** Carga la página remota de autores. */
+const loadAuthorsPage = () =>
+  loadRemoteWithFallback(
+    'http://localhost:4202/remoteEntry.js',
+    './AuthorsPage'
+  );
+
+/** Carga la página remota de préstamos. */
+const loadLoansPage = () =>
+  loadRemoteWithFallback(
+    'http://localhost:4203/remoteEntry.js',
+    './LoansPage'
+  );
 
 /**
  * Definición de las rutas principales de la aplicación.
@@ -25,18 +52,14 @@ export class RemoteFallbackComponent {}
  * - Rutas de navegación principales
  * - Redirección por defecto para rutas no existentes
  */
+/** Define las rutas federadas del host y sus componentes de respaldo. */
 export const routes: Routes = [
   /**
    * Ruta de libros (Microfrontend Books).
    */
   {
     path: 'books',
-    loadComponent: () =>
-      loadRemoteModule({
-        type: 'module',
-        remoteEntry: 'http://localhost:4201/remoteEntry.js',
-        exposedModule: './BooksPage',
-      }).then((m) => m.BooksPage).catch(() => RemoteFallbackComponent),
+    loadComponent: loadBooksPage,
   },
 
   /**
@@ -44,12 +67,7 @@ export const routes: Routes = [
    */
   {
     path: 'authors',
-    loadComponent: () =>
-      loadRemoteModule({
-        type: 'module',
-        remoteEntry: 'http://localhost:4202/remoteEntry.js',
-        exposedModule: './AuthorsPage',
-      }).then((m) => m.AuthorsPage).catch(() => RemoteFallbackComponent),
+    loadComponent: loadAuthorsPage,
   },
 
   /**
@@ -57,12 +75,7 @@ export const routes: Routes = [
    */
   {
     path: 'loans',
-    loadComponent: () =>
-      loadRemoteModule({
-        type: 'module',
-        remoteEntry: 'http://localhost:4203/remoteEntry.js',
-        exposedModule: './LoansPage',
-      }).then((m) => m.LoansPage).catch(() => RemoteFallbackComponent),
+    loadComponent: loadLoansPage,
   },
 
   /**
