@@ -41,14 +41,38 @@ public class InMemoryAuthorRepository implements AuthorRepository {
         List<Author> authors = new ArrayList<>();
 
         for (int i = 1; i <= count; i++) {
-            authors.add(new Author(
-                    (long) i,
-                    NAMES[random.nextInt(NAMES.length)],
-                    NATIONALITIES[random.nextInt(NATIONALITIES.length)],
-                    random.nextInt(1, 40)
-            ));
+            authors.add(generateAuthor((long) i, randomNationality()));
         }
 
         return authors;
+    }
+
+    @Override
+    public Author findById(Long id) {
+        return generateAuthor(id, randomNationality());
+    }
+
+    @Override
+    public List<Author> findByNationality(String nationality, int count) {
+        List<Author> authors = new ArrayList<>();
+
+        for (int i = 1; i <= count; i++) {
+            authors.add(generateAuthor((long) i, nationality));
+        }
+
+        return authors;
+    }
+
+    private Author generateAuthor(Long id, String nationality) {
+        return new Author(
+                id,
+                NAMES[random.nextInt(NAMES.length)],
+                nationality,
+                random.nextInt(1, 40)
+        );
+    }
+
+    private String randomNationality() {
+        return NATIONALITIES[random.nextInt(NATIONALITIES.length)];
     }
 }
