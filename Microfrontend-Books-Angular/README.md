@@ -1,88 +1,33 @@
-# Microfrontend Books (Angular)
+# Microfrontend Books Angular
 
-Microfrontend del catálogo de libros del proyecto **Microfrontends & Clean Architecture**.
-Consume exclusivamente el microservicio **Books (Node.js)** mediante su API REST.
+Microfrontend federado de libros. Escucha en el puerto 4201 y consume únicamente
+`Microservice-Books-NodeJS` en el puerto 3001.
 
-- Generado con Angular CLI 20.3.14.
-- Module Federation (webpack) — módulo remoto `mf-books`.
-- Arquitectura Limpia (Clean Architecture) por capas.
+## Module Federation
 
-## 🏗️ Arquitectura
+- Nombre remoto: `mf-books`.
+- Módulo expuesto: `./BooksPage`.
+- Archivo remoto: `http://localhost:4201/remoteEntry.js`.
 
-```
-src/app
-├── domain          # modelos y contratos de repositorio (núcleo)
-│   ├── models            # Book, BookGenre
-│   └── repositories      # BookRepository (puerto)
-├── application     # casos de uso
-│   └── use-cases         # GetBooks, FilterBooksByGenre, SearchBooksByTitle
-├── infrastructure  # adaptadores
-│   ├── config            # API_CONFIG (URLs de microservicios)
-│   └── repositories      # HttpBookRepository (adaptador HTTP)
-└── presentation    # interfaz de usuario
-    ├── components        # BookCard
-    └── pages/books       # BooksPage (página principal)
-```
+## Clean Architecture y casos de uso
 
-## 🔌 Module Federation
+- `domain`: modelo `Book` y contrato `BookRepository`.
+- `application`: `GetBooksUseCase`, `FilterBooksByGenreUseCase` y
+  `SearchBooksByTitleUseCase`.
+- `infrastructure`: `HttpBookRepository` y configuración de la API.
+- `presentation`: `BooksPage` y `BookCard`.
 
-| Propiedad | Valor |
-| --- | --- |
-| Nombre del módulo | `mf-books` |
-| Archivo remoto | `remoteEntry.js` |
-| Módulo expuesto | `./BooksPage` |
-| Puerto | `4201` |
+Los casos de uso no dependen de Angular. La página usa los casos de uso y el repositorio
+usa `HttpClient` para llamar a `/api/books/{countBooks}`, `/api/books/genre/{genre}/{countBooks}`
+y `/api/books/detail/{id}`.
 
-El host (`Client-Host-Angular`) carga esta página con:
-
-```ts
-loadRemoteModule({
-  type: 'module',
-  remoteEntry: 'http://localhost:4201/remoteEntry.js',
-  exposedModule: './BooksPage',
-}).then((m) => m.BooksPage);
-```
-
-## 📡 API consumida
-
-| Método | Endpoint | Descripción |
-| --- | --- | --- |
-| GET | `http://localhost:3001/api/books/{count}` | Obtiene `count` libros |
-
-> El microfrontend Books **solo** consume el microservicio Books (`:3001`).
-
-## 🧠 Casos de uso
-
-1. **GetBooksUseCase** — obtiene libros desde el microservicio.
-2. **FilterBooksByGenreUseCase** — filtra los libros por género.
-3. **SearchBooksByTitleUseCase** — busca libros por título.
-
-## 🚀 Ejecución
+## Ejecución, pruebas y documentación
 
 ```bash
 npm install
-npm run start   # http://localhost:4201
-```
-
-Verifica que el microservicio Books esté en ejecución en `http://localhost:3001`.
-
-## 🧪 Pruebas
-
-Pruebas unitarias con **Jest** (cobertura > 90%):
-
-```bash
-npm test               # ejecuta las pruebas
-npm run test:coverage  # reporte de cobertura
-```
-
-## 🔨 Build
-
-```bash
-npm run build   # genera dist/ con remoteEntry.js
-```
-
-## 📚 Documentación técnica
-
-```bash
-npm run compodoc   # genera la documentación en ./documentation
+npm start
+npm test -- --runInBand
+npm run test:coverage
+npm run build
+npm run docs:coverage
 ```
