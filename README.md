@@ -33,7 +33,7 @@ Todos los componentes aplican separación por capas (dominio, aplicación, infra
 | Microservice Authors | Spring Boot | 3002 | ✅ Estructura creada |
 | Microservice Loans | Node.js + Express | 3003 | ✅ Estructura creada |
 | Host (Client-Host-Angular) | Angular | 4200 | ⏳ Pendiente migrar a los nuevos dominios |
-| Microfrontend Books | Angular | 4201 | ⏳ Pendiente |
+| Microfrontend Books | Angular | 4201 | ✅ Implementado (consume MS Books :3001) |
 | Microfrontend Authors | Angular | 4202 | ⏳ Pendiente |
 | Microfrontend Loans | Angular | 4203 | ⏳ Pendiente |
 
@@ -93,6 +93,26 @@ cd Microservice-Authors-SpringBoot
 ./mvnw spring-boot:run
 ```
 
+### Ejecutar los microfrontends
+
+Cada microfrontend se ejecuta de forma independiente y expone su `remoteEntry.js`
+para que el host lo consuma vía Module Federation.
+
+```bash
+# Microfrontend Books -> http://localhost:4201  (remoteEntry: /remoteEntry.js)
+cd Microfrontend-Books-Angular
+npm install
+npm run start
+```
+
+Pruebas unitarias (Jest) del microfrontend Books:
+
+```bash
+cd Microfrontend-Books-Angular
+npm test              # ejecuta las pruebas con cobertura
+npm run test:coverage # reporte de cobertura
+```
+
 ## 🗂️ Estructura Clean Architecture (microservicios)
 
 ```
@@ -113,3 +133,25 @@ src/main/java/com/uceva/authors
 ├── infrastructure  # repositorios y configuración (CORS)
 └── presentation    # controladores REST
 ```
+
+### Microfrontend Books (Angular + Module Federation)
+
+```
+src/app
+├── domain          # modelos y contratos de repositorio (núcleo)
+│   ├── models
+│   └── repositories
+├── application     # casos de uso
+│   └── use-cases   # GetBooks, FilterBooksByGenre, SearchBooksByTitle
+├── infrastructure  # adaptadores HTTP y configuración
+│   ├── config
+│   └── repositories
+└── presentation    # componentes y páginas
+    ├── components
+    └── pages
+```
+
+- **Módulo federado:** `mf-books`
+- **Módulo expuesto:** `./BooksPage` (`src/app/presentation/pages/books/books.page.ts`)
+- **Microservicio consumido:** `http://localhost:3001` (`GET /api/books/{count}`)
+
