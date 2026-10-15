@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Author } from '../../domain/models/author.model';
 import { AuthorRepository } from '../../domain/repositories/author.repository';
 import { API_CONFIG } from '../config/api.config';
@@ -51,13 +51,4 @@ export class HttpAuthorRepository extends AuthorRepository {
     return this.http.get<Author>(`${API_CONFIG.authorsApiUrl}/api/authors/detail/${id}`);
   }
 
-  /** Consulta autores relacionados con un nombre. */
-  override searchAuthors(name: string, count: number): Observable<Author[]> {
-    return this.getAuthors(count).pipe(
-      map((authors) => {
-        const query = name.trim().toLowerCase();
-        return query ? authors.filter((author) => author.name.toLowerCase().includes(query)) : authors;
-      })
-    );
-  }
 }

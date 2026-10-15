@@ -4,7 +4,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FilterLoansByStatusUseCase } from '../../../application/use-cases/filter-loans-by-status.usecase';
 import { GetLoansUseCase } from '../../../application/use-cases/get-loans.usecase';
-import { SearchLoansByUserUseCase } from '../../../application/use-cases/search-loans-by-user.usecase';
+import { GetLoanByIdUseCase } from '../../../application/use-cases/get-loan-by-id.usecase';
 import {
   LOAN_STATUSES,
   Loan,
@@ -24,7 +24,7 @@ import { LoanCard } from '../../components/loan-card/loan-card';
  *
  * Responsabilidades:
  * - Consultar préstamos a través del microservicio Loans.
- * - Filtrar por estado y buscar por usuario.
+ * - Filtrar por estado y consultar el detalle de un préstamo.
  * - Mostrar estados de carga, error y resultados.
  */
 @Component({
@@ -35,7 +35,7 @@ import { LoanCard } from '../../components/loan-card/loan-card';
   providers: [
     { provide: GetLoansUseCase, useClass: GetLoansUseCase, deps: [LoanRepository] },
     { provide: FilterLoansByStatusUseCase, useClass: FilterLoansByStatusUseCase, deps: [LoanRepository] },
-    { provide: SearchLoansByUserUseCase, useClass: SearchLoansByUserUseCase, deps: [LoanRepository] },
+    { provide: GetLoanByIdUseCase, useClass: GetLoanByIdUseCase, deps: [LoanRepository] },
     {
       provide: LoanRepository,
       useFactory: (http: HttpClient) => new HttpLoanRepository(http),
@@ -50,8 +50,8 @@ export class LoansPage implements OnInit {
   /** Caso de uso: filtrar por estado */
   private readonly filterByStatus = inject(FilterLoansByStatusUseCase);
 
-  /** Caso de uso: buscar por usuario */
-  private readonly searchByUser = inject(SearchLoansByUserUseCase);
+  /** Caso de uso: consultar detalle por ID */
+  private readonly getLoanById = inject(GetLoanByIdUseCase);
 
   /** Estados disponibles para el filtro */
   readonly statuses = LOAN_STATUSES;
@@ -68,8 +68,8 @@ export class LoansPage implements OnInit {
   /** Estado seleccionado en el filtro */
   readonly status = signal<LoanStatusFilter>('all');
 
-  /** Término de búsqueda por usuario */
-  readonly searchTerm = signal('');
+  /** Préstamo seleccionado para mostrar su detalle */
+  readonly selectedLoan = signal<Loan | null>(null);
 
   /** Indicador de carga */
   readonly loading = signal(false);
@@ -78,17 +78,9 @@ export class LoansPage implements OnInit {
   readonly error = signal<string | null>(null);
 
   /**
-   * Préstamos visibles tras aplicar el filtro de estado y la búsqueda.
-   *
-   * @remarks
-   * Combina dos casos de uso de aplicación sobre el estado actual.
+   * Préstamos visibles tras aplicar el filtro de estado.
    */
-  readonly visibleLoans = computed(() =>
-    this.searchByUser.execute(
-      this.filterByStatus.execute(this.loans(), this.status()),
-      this.searchTerm()
-    )
-  );
+  readonly visibleLoans = computed(() => this.filterByStatus.execute(this.loans(), this.status()));
 
   /**
    * Inicializa la página cargando los préstamos.
@@ -130,18 +122,18 @@ export class LoansPage implements OnInit {
     });
   }
 
-  /**
-   * Actualiza el término de búsqueda.
-   *
-   * @param value Nuevo término
-   */
-  onSearchChange(value: string): void {
-    this.searchTerm.set(value);
+  /** Consulta el detalle de un préstamo. */
+  onDetail(id: number): void {
     this.loading.set(true);
-    this.searchByUser.execute(value, this.count()).subscribe({
-      next: (loans) => { this.loans.set(loans); this.loading.set(false); },
-      error: () => { this.error.set('No se pudieron buscar los préstamos.'); this.loading.set(false); },
+    this.getLoanById.execute(id).subscribe({
+      next: (loan) => { this.selectedLoan.set(loan); this.loading.set(false); },
+      error: () => { this.error.set('No se pudo cargar el detalle del préstamo.'); this.loading.set(false); },
     });
+  }
+
+  /** Cierra el detalle seleccionado. */
+  closeDetail(): void {
+    this.selectedLoan.set(null);
   }
 
   /**

@@ -14,5 +14,8 @@
     <div class="mt-auto fw-bold text-success">
       {{ book().price | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
     </div>
+    <button type="button" class="btn btn-sm btn-outline-primary mt-3" (click)="detailRequested.emit(book().id)">
+      Ver detalle
+    </button>
   </div>
 </div>

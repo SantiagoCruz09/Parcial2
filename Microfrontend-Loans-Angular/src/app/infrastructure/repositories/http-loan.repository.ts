@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Loan } from '../../domain/models/loan.model';
 import { LoanRepository } from '../../domain/repositories/loan.repository';
 import { API_CONFIG } from '../config/api.config';
@@ -48,13 +48,4 @@ export class HttpLoanRepository extends LoanRepository {
     return this.http.get<Loan>(`${API_CONFIG.loansApiUrl}/api/loans/detail/${id}`);
   }
 
-  /** Consulta préstamos relacionados con un usuario. */
-  override searchLoans(userName: string, count: number): Observable<Loan[]> {
-    return this.getLoans(count).pipe(
-      map((loans) => {
-        const query = userName.trim().toLowerCase();
-        return query ? loans.filter((loan) => loan.userName.toLowerCase().includes(query)) : loans;
-      })
-    );
-  }
 }

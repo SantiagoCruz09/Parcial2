@@ -81,12 +81,4 @@ describe('HttpBookRepository', () => {
     req.flush(books[0]);
   });
 
-  it('consulta libros por título', () => {
-    repository.searchBooks('Quijote', 4).subscribe((result) => {
-      expect(result).toEqual(books);
-    });
-    const req = httpMock.expectOne(`${API_CONFIG.booksApiUrl}/api/books/4`);
-    expect(req.request.method).toBe('GET');
-    req.flush(books);
-  });
 });

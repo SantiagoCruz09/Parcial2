@@ -10,5 +10,8 @@
     <ul class="list-unstyled small text-body-secondary mb-0 mt-3">
       <li><i class="bi bi-hash"></i> ID: {{ author().id }}</li>
     </ul>
+    <button type="button" class="btn btn-sm btn-outline-primary mt-3" (click)="detailRequested.emit(author().id)">
+      Ver detalle
+    </button>
   </div>
 </div>

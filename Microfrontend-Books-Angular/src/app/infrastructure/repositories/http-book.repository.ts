@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Book } from '../../domain/models/book.model';
 import { BookRepository } from '../../domain/repositories/book.repository';
 import { API_CONFIG } from '../config/api.config';
@@ -48,13 +48,4 @@ export class HttpBookRepository extends BookRepository {
     return this.http.get<Book>(`${API_CONFIG.booksApiUrl}/api/books/detail/${id}`);
   }
 
-  /** Consulta libros relacionados con un título. */
-  override searchBooks(title: string, count: number): Observable<Book[]> {
-    return this.getBooks(count).pipe(
-      map((books) => {
-        const query = title.trim().toLowerCase();
-        return query ? books.filter((book) => book.title.toLowerCase().includes(query)) : books;
-      })
-    );
-  }
 }

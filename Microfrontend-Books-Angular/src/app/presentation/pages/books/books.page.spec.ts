@@ -92,16 +92,28 @@ describe('BooksPage', () => {
     expect(visible[0].genre).toBe('Poesía');
   });
 
-  it('busca los libros por título', () => {
+  it('consulta el detalle de un libro', () => {
     fixture.detectChanges();
     flushBooks();
 
-    fixture.componentInstance.onSearchChange('soledad');
+    fixture.componentInstance.onDetail(1);
+    httpMock.expectOne((req) => req.url.includes('/api/books/detail/1')).flush(books[0]);
+
+    expect(fixture.componentInstance.selectedBook()).toEqual(books[0]);
+    fixture.componentInstance.closeDetail();
+    expect(fixture.componentInstance.selectedBook()).toBeNull();
+  });
+
+  it('gestiona el error del detalle de un libro', () => {
+    fixture.detectChanges();
     flushBooks();
 
-    const visible = fixture.componentInstance.visibleBooks();
-    expect(visible).toHaveLength(1);
-    expect(visible[0].id).toBe(1);
+    fixture.componentInstance.onDetail(99);
+    httpMock.expectOne((req) => req.url.includes('/api/books/detail/99'))
+      .flush('error', { status: 404, statusText: 'Not Found' });
+
+    expect(fixture.componentInstance.error()).toBe('No se pudo cargar el detalle del libro.');
+    expect(fixture.componentInstance.loading()).toBe(false);
   });
 
   it('recarga los libros al cambiar la cantidad', () => {

@@ -13,7 +13,7 @@ Microfrontend federado de autores. Escucha en el puerto 4202 y consume únicamen
 
 - `domain`: modelo `Author` y contrato `AuthorRepository`.
 - `application`: `GetAuthorsUseCase`, `FilterAuthorsByNationalityUseCase` y
-  `SearchAuthorsByNameUseCase`.
+  `GetAuthorByIdUseCase`.
 - `infrastructure`: `HttpAuthorRepository` y configuración de la API.
 - `presentation`: `AuthorsPage` y `AuthorCard`.
 

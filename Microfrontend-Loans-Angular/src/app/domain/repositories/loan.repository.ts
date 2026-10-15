@@ -24,6 +24,4 @@ export abstract class LoanRepository {
   abstract getLoansByStatus(status: string, count: number): Observable<Loan[]>;
   /** Consulta un préstamo por identificador. */
   abstract getLoanById(id: number): Observable<Loan>;
-  /** Consulta préstamos relacionados con un usuario. */
-  abstract searchLoans(userName: string, count: number): Observable<Loan[]>;
 }

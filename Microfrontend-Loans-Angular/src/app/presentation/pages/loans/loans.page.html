@@ -13,17 +13,6 @@
 
   <div class="row g-2 align-items-end mb-4">
     <div class="col-12 col-md-5">
-      <label class="form-label" for="loans-search">Buscar por usuario</label>
-      <input
-        id="loans-search"
-        type="text"
-        class="form-control"
-        placeholder="Escribe un nombre de usuario..."
-        [ngModel]="searchTerm()"
-        (ngModelChange)="onSearchChange($event)"
-      />
-    </div>
-    <div class="col-6 col-md-3">
       <label class="form-label" for="loans-status">Estado</label>
       <select
         id="loans-status"
@@ -35,7 +24,7 @@
         <option *ngFor="let item of statuses" [value]="item">{{ item }}</option>
       </select>
     </div>
-    <div class="col-6 col-md-2">
+    <div class="col-6 col-md-3">
       <label class="form-label" for="loans-count">Cantidad</label>
       <select
         id="loans-count"
@@ -47,6 +36,14 @@
           {{ option }}
         </option>
       </select>
+    </div>
+
+    <div *ngIf="selectedLoan() as loan" class="alert alert-primary d-flex justify-content-between align-items-start" role="status">
+      <div>
+        <strong>Detalle del préstamo:</strong> {{ loan.bookTitle }} |
+        {{ loan.userName }} | {{ loan.status }} | {{ loan.loanDate }} - {{ loan.returnDate }}
+      </div>
+      <button type="button" class="btn-close" aria-label="Cerrar detalle" (click)="closeDetail()"></button>
     </div>
   </div>
 
@@ -71,7 +68,7 @@
 
   <div class="row g-3" *ngIf="!loading() && !error()">
     <div class="col-12 col-sm-6 col-lg-4" *ngFor="let loan of visibleLoans()">
-      <app-loan-card [loan]="loan"></app-loan-card>
+      <app-loan-card [loan]="loan" (detailRequested)="onDetail($event)"></app-loan-card>
     </div>
   </div>
 </section>

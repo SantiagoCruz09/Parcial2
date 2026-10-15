@@ -79,12 +79,4 @@ describe('HttpAuthorRepository', () => {
     req.flush(authors[0]);
   });
 
-  it('consulta autores por nombre', () => {
-    repository.searchAuthors('Isabel', 4).subscribe((result) => {
-      expect(result).toEqual(authors);
-    });
-    const req = httpMock.expectOne(`${API_CONFIG.authorsApiUrl}/api/authors/4`);
-    expect(req.request.method).toBe('GET');
-    req.flush(authors);
-  });
 });

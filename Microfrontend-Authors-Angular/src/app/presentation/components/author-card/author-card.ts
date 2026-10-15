@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Author } from '../../../domain/models/author.model';
 
 /**
@@ -17,4 +17,7 @@ import { Author } from '../../../domain/models/author.model';
 export class AuthorCard {
   /** Autor a renderizar (entrada obligatoria) */
   readonly author = input.required<Author>();
+
+  /** Evento para solicitar el detalle del autor. */
+  readonly detailRequested = output<number>();
 }

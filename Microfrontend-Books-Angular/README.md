@@ -13,7 +13,7 @@ Microfrontend federado de libros. Escucha en el puerto 4201 y consume únicament
 
 - `domain`: modelo `Book` y contrato `BookRepository`.
 - `application`: `GetBooksUseCase`, `FilterBooksByGenreUseCase` y
-  `SearchBooksByTitleUseCase`.
+  `GetBookByIdUseCase`.
 - `infrastructure`: `HttpBookRepository` y configuración de la API.
 - `presentation`: `BooksPage` y `BookCard`.
 

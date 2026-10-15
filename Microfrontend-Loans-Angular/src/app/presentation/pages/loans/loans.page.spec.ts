@@ -92,16 +92,28 @@ describe('LoansPage', () => {
     expect(visible[0].status).toBe('Devuelto');
   });
 
-  it('busca los préstamos por usuario', () => {
+  it('consulta el detalle de un préstamo', () => {
     fixture.detectChanges();
     flushLoans();
 
-    fixture.componentInstance.onSearchChange('ana');
+    fixture.componentInstance.onDetail(1);
+    httpMock.expectOne((req) => req.url.includes('/api/loans/detail/1')).flush(loans[0]);
+
+    expect(fixture.componentInstance.selectedLoan()).toEqual(loans[0]);
+    fixture.componentInstance.closeDetail();
+    expect(fixture.componentInstance.selectedLoan()).toBeNull();
+  });
+
+  it('gestiona el error del detalle de un préstamo', () => {
+    fixture.detectChanges();
     flushLoans();
 
-    const visible = fixture.componentInstance.visibleLoans();
-    expect(visible).toHaveLength(1);
-    expect(visible[0].id).toBe(1);
+    fixture.componentInstance.onDetail(99);
+    httpMock.expectOne((req) => req.url.includes('/api/loans/detail/99'))
+      .flush('error', { status: 404, statusText: 'Not Found' });
+
+    expect(fixture.componentInstance.error()).toBe('No se pudo cargar el detalle del préstamo.');
+    expect(fixture.componentInstance.loading()).toBe(false);
   });
 
   it('recarga los préstamos al cambiar la cantidad', () => {

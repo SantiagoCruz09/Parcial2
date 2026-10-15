@@ -45,7 +45,6 @@ describe('FilterBooksByGenreUseCase', () => {
       getBooks: jest.fn().mockReturnValue([]),
       getBooksByGenre: jest.fn().mockReturnValue([]),
       getBookById: jest.fn().mockReturnValue([]),
-      searchBooks: jest.fn().mockReturnValue([]),
     };
     const remoteUseCase = new FilterBooksByGenreUseCase(repository);
 

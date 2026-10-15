@@ -13,17 +13,6 @@
 
   <div class="row g-2 align-items-end mb-4">
     <div class="col-12 col-md-5">
-      <label class="form-label" for="authors-search">Buscar por nombre</label>
-      <input
-        id="authors-search"
-        type="text"
-        class="form-control"
-        placeholder="Escribe un nombre..."
-        [ngModel]="searchTerm()"
-        (ngModelChange)="onSearchChange($event)"
-      />
-    </div>
-    <div class="col-6 col-md-3">
       <label class="form-label" for="authors-nationality">Nacionalidad</label>
       <select
         id="authors-nationality"
@@ -35,7 +24,7 @@
         <option *ngFor="let item of nationalities()" [value]="item">{{ item }}</option>
       </select>
     </div>
-    <div class="col-6 col-md-2">
+    <div class="col-6 col-md-3">
       <label class="form-label" for="authors-count">Cantidad</label>
       <select
         id="authors-count"
@@ -47,6 +36,14 @@
           {{ option }}
         </option>
       </select>
+    </div>
+
+    <div *ngIf="selectedAuthor() as author" class="alert alert-primary d-flex justify-content-between align-items-start" role="status">
+      <div>
+        <strong>Detalle del autor:</strong> {{ author.name }} |
+        {{ author.nationality }} | {{ author.booksWritten }} libros
+      </div>
+      <button type="button" class="btn-close" aria-label="Cerrar detalle" (click)="closeDetail()"></button>
     </div>
   </div>
 
@@ -71,7 +68,7 @@
 
   <div class="row g-3" *ngIf="!loading() && !error()">
     <div class="col-12 col-sm-6 col-lg-4" *ngFor="let author of visibleAuthors()">
-      <app-author-card [author]="author"></app-author-card>
+      <app-author-card [author]="author" (detailRequested)="onDetail($event)"></app-author-card>
     </div>
   </div>
 </section>

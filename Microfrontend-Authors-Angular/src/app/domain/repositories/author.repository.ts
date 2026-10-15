@@ -27,6 +27,4 @@ export abstract class AuthorRepository {
   ): Observable<Author[]>;
   /** Consulta un autor por identificador. */
   abstract getAuthorById(id: number): Observable<Author>;
-  /** Consulta autores relacionados con un nombre. */
-  abstract searchAuthors(name: string, count: number): Observable<Author[]>;
 }

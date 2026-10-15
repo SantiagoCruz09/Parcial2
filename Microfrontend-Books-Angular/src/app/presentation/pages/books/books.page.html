@@ -13,17 +13,6 @@
 
   <div class="row g-2 align-items-end mb-4">
     <div class="col-12 col-md-5">
-      <label class="form-label" for="books-search">Buscar por título</label>
-      <input
-        id="books-search"
-        type="text"
-        class="form-control"
-        placeholder="Escribe un título..."
-        [ngModel]="searchTerm()"
-        (ngModelChange)="onSearchChange($event)"
-      />
-    </div>
-    <div class="col-6 col-md-3">
       <label class="form-label" for="books-genre">Género</label>
       <select
         id="books-genre"
@@ -35,7 +24,7 @@
         <option *ngFor="let item of genres" [value]="item">{{ item }}</option>
       </select>
     </div>
-    <div class="col-6 col-md-2">
+    <div class="col-6 col-md-3">
       <label class="form-label" for="books-count">Cantidad</label>
       <select
         id="books-count"
@@ -47,6 +36,14 @@
           {{ option }}
         </option>
       </select>
+    </div>
+
+    <div *ngIf="selectedBook() as book" class="alert alert-primary d-flex justify-content-between align-items-start" role="status">
+      <div>
+        <strong>Detalle del libro:</strong> {{ book.title }} |
+        {{ book.author }} | {{ book.genre }} | {{ book.year }} | {{ book.price | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+      </div>
+      <button type="button" class="btn-close" aria-label="Cerrar detalle" (click)="closeDetail()"></button>
     </div>
   </div>
 
@@ -71,7 +68,7 @@
 
   <div class="row g-3" *ngIf="!loading() && !error()">
     <div class="col-12 col-sm-6 col-lg-4" *ngFor="let book of visibleBooks()">
-      <app-book-card [book]="book"></app-book-card>
+      <app-book-card [book]="book" (detailRequested)="onDetail($event)"></app-book-card>
     </div>
   </div>
 </section>

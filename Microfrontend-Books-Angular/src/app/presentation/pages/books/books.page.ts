@@ -4,7 +4,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FilterBooksByGenreUseCase } from '../../../application/use-cases/filter-books-by-genre.usecase';
 import { GetBooksUseCase } from '../../../application/use-cases/get-books.usecase';
-import { SearchBooksByTitleUseCase } from '../../../application/use-cases/search-books-by-title.usecase';
+import { GetBookByIdUseCase } from '../../../application/use-cases/get-book-by-id.usecase';
 import {
   BOOK_GENRES,
   Book,
@@ -24,7 +24,7 @@ import { BookCard } from '../../components/book-card/book-card';
  *
  * Responsabilidades:
  * - Consultar libros a través del microservicio Books.
- * - Filtrar por género y buscar por título.
+ * - Filtrar por género y consultar el detalle de un libro.
  * - Mostrar estados de carga, error y resultados.
  */
 @Component({
@@ -35,7 +35,7 @@ import { BookCard } from '../../components/book-card/book-card';
   providers: [
     { provide: GetBooksUseCase, useClass: GetBooksUseCase, deps: [BookRepository] },
     { provide: FilterBooksByGenreUseCase, useClass: FilterBooksByGenreUseCase, deps: [BookRepository] },
-    { provide: SearchBooksByTitleUseCase, useClass: SearchBooksByTitleUseCase, deps: [BookRepository] },
+    { provide: GetBookByIdUseCase, useClass: GetBookByIdUseCase, deps: [BookRepository] },
     {
       provide: BookRepository,
       useFactory: (http: HttpClient) => new HttpBookRepository(http),
@@ -50,8 +50,8 @@ export class BooksPage implements OnInit {
   /** Caso de uso: filtrar por género */
   private readonly filterByGenre = inject(FilterBooksByGenreUseCase);
 
-  /** Caso de uso: buscar por título */
-  private readonly searchByTitle = inject(SearchBooksByTitleUseCase);
+  /** Caso de uso: consultar detalle por ID */
+  private readonly getBookById = inject(GetBookByIdUseCase);
 
   /** Géneros disponibles para el filtro */
   readonly genres = BOOK_GENRES;
@@ -68,8 +68,8 @@ export class BooksPage implements OnInit {
   /** Género seleccionado en el filtro */
   readonly genre = signal<BookGenreFilter>('all');
 
-  /** Término de búsqueda por título */
-  readonly searchTerm = signal('');
+  /** Libro seleccionado para mostrar su detalle */
+  readonly selectedBook = signal<Book | null>(null);
 
   /** Indicador de carga */
   readonly loading = signal(false);
@@ -78,17 +78,9 @@ export class BooksPage implements OnInit {
   readonly error = signal<string | null>(null);
 
   /**
-   * Libros visibles tras aplicar el filtro de género y la búsqueda.
-   *
-   * @remarks
-   * Combina dos casos de uso de aplicación sobre el estado actual.
+   * Libros visibles tras aplicar el filtro de género.
    */
-  readonly visibleBooks = computed(() =>
-    this.searchByTitle.execute(
-      this.filterByGenre.execute(this.books(), this.genre()),
-      this.searchTerm()
-    )
-  );
+  readonly visibleBooks = computed(() => this.filterByGenre.execute(this.books(), this.genre()));
 
   /**
    * Inicializa la página cargando los libros.
@@ -130,18 +122,18 @@ export class BooksPage implements OnInit {
     });
   }
 
-  /**
-   * Actualiza el término de búsqueda.
-   *
-   * @param value Nuevo término
-   */
-  onSearchChange(value: string): void {
-    this.searchTerm.set(value);
+  /** Consulta el detalle de un libro. */
+  onDetail(id: number): void {
     this.loading.set(true);
-    this.searchByTitle.execute(value, this.count()).subscribe({
-      next: (books) => { this.books.set(books); this.loading.set(false); },
-      error: () => { this.error.set('No se pudieron buscar los libros.'); this.loading.set(false); },
+    this.getBookById.execute(id).subscribe({
+      next: (book) => { this.selectedBook.set(book); this.loading.set(false); },
+      error: () => { this.error.set('No se pudo cargar el detalle del libro.'); this.loading.set(false); },
     });
+  }
+
+  /** Cierra el detalle seleccionado. */
+  closeDetail(): void {
+    this.selectedBook.set(null);
   }
 
   /**

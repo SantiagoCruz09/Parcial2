@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Loan, LoanStatus } from '../../../domain/models/loan.model';
 
 /**
@@ -17,6 +17,9 @@ import { Loan, LoanStatus } from '../../../domain/models/loan.model';
 export class LoanCard {
   /** Préstamo a renderizar (entrada obligatoria) */
   readonly loan = input.required<Loan>();
+
+  /** Evento para solicitar el detalle del préstamo. */
+  readonly detailRequested = output<number>();
 
   /** Clases de Bootstrap asociadas a cada estado del préstamo */
   readonly statusBadgeClass: Record<LoanStatus, string> = {

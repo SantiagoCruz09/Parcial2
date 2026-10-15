@@ -81,12 +81,4 @@ describe('HttpLoanRepository', () => {
     req.flush(loans[0]);
   });
 
-  it('consulta préstamos por usuario', () => {
-    repository.searchLoans('Ana', 4).subscribe((result) => {
-      expect(result).toEqual(loans);
-    });
-    const req = httpMock.expectOne(`${API_CONFIG.loansApiUrl}/api/loans/4`);
-    expect(req.request.method).toBe('GET');
-    req.flush(loans);
-  });
 });

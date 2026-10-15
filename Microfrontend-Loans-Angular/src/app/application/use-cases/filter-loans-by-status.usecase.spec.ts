@@ -45,7 +45,6 @@ describe('FilterLoansByStatusUseCase', () => {
       getLoans: jest.fn().mockReturnValue([]),
       getLoansByStatus: jest.fn().mockReturnValue([]),
       getLoanById: jest.fn().mockReturnValue([]),
-      searchLoans: jest.fn().mockReturnValue([]),
     };
     const remoteUseCase = new FilterLoansByStatusUseCase(repository);
 

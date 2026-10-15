@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Book } from '../../../domain/models/book.model';
 
 /**
@@ -19,4 +19,7 @@ import { Book } from '../../../domain/models/book.model';
 export class BookCard {
   /** Libro a renderizar (entrada obligatoria) */
   readonly book = input.required<Book>();
+
+  /** Evento para solicitar el detalle del libro. */
+  readonly detailRequested = output<number>();
 }

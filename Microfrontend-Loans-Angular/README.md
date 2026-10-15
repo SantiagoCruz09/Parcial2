@@ -13,7 +13,7 @@ Microfrontend federado de préstamos. Escucha en el puerto 4203 y consume única
 
 - `domain`: modelo `Loan` y contrato `LoanRepository`.
 - `application`: `GetLoansUseCase`, `FilterLoansByStatusUseCase` y
-  `SearchLoansByUserUseCase`.
+  `GetLoanByIdUseCase`.
 - `infrastructure`: `HttpLoanRepository` y configuración de la API.
 - `presentation`: `LoansPage` y `LoanCard`.
 

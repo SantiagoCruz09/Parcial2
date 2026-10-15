@@ -4,7 +4,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FilterAuthorsByNationalityUseCase } from '../../../application/use-cases/filter-authors-by-nationality.usecase';
 import { GetAuthorsUseCase } from '../../../application/use-cases/get-authors.usecase';
-import { SearchAuthorsByNameUseCase } from '../../../application/use-cases/search-authors-by-name.usecase';
+import { GetAuthorByIdUseCase } from '../../../application/use-cases/get-author-by-id.usecase';
 import {
   Author,
   NationalityFilter,
@@ -23,7 +23,7 @@ import { AuthorCard } from '../../components/author-card/author-card';
  *
  * Responsabilidades:
  * - Consultar autores a través del microservicio Authors.
- * - Filtrar por nacionalidad y buscar por nombre.
+ * - Filtrar por nacionalidad y consultar el detalle de un autor.
  * - Mostrar estados de carga, error y resultados.
  */
 @Component({
@@ -34,7 +34,7 @@ import { AuthorCard } from '../../components/author-card/author-card';
   providers: [
     { provide: GetAuthorsUseCase, useClass: GetAuthorsUseCase, deps: [AuthorRepository] },
     { provide: FilterAuthorsByNationalityUseCase, useClass: FilterAuthorsByNationalityUseCase, deps: [AuthorRepository] },
-    { provide: SearchAuthorsByNameUseCase, useClass: SearchAuthorsByNameUseCase, deps: [AuthorRepository] },
+    { provide: GetAuthorByIdUseCase, useClass: GetAuthorByIdUseCase, deps: [AuthorRepository] },
     {
       provide: AuthorRepository,
       useFactory: (http: HttpClient) => new HttpAuthorRepository(http),
@@ -51,8 +51,8 @@ export class AuthorsPage implements OnInit {
     FilterAuthorsByNationalityUseCase
   );
 
-  /** Caso de uso: buscar por nombre */
-  private readonly searchByName = inject(SearchAuthorsByNameUseCase);
+  /** Caso de uso: consultar detalle por ID */
+  private readonly getAuthorById = inject(GetAuthorByIdUseCase);
 
   /** Opciones de cantidad de autores a consultar */
   readonly countOptions = [6, 12, 18, 24];
@@ -66,8 +66,8 @@ export class AuthorsPage implements OnInit {
   /** Nacionalidad seleccionada en el filtro */
   readonly nationality = signal<NationalityFilter>('all');
 
-  /** Término de búsqueda por nombre */
-  readonly searchTerm = signal('');
+  /** Autor seleccionado para mostrar su detalle */
+  readonly selectedAuthor = signal<Author | null>(null);
 
   /** Indicador de carga */
   readonly loading = signal(false);
@@ -81,16 +81,10 @@ export class AuthorsPage implements OnInit {
   );
 
   /**
-   * Autores visibles tras aplicar el filtro de nacionalidad y la búsqueda.
-   *
-   * @remarks
-   * Combina dos casos de uso de aplicación sobre el estado actual.
+   * Autores visibles tras aplicar el filtro de nacionalidad.
    */
   readonly visibleAuthors = computed(() =>
-    this.searchByName.execute(
-      this.filterByNationality.execute(this.authors(), this.nationality()),
-      this.searchTerm()
-    )
+    this.filterByNationality.execute(this.authors(), this.nationality())
   );
 
   /**
@@ -133,18 +127,18 @@ export class AuthorsPage implements OnInit {
     });
   }
 
-  /**
-   * Actualiza el término de búsqueda.
-   *
-   * @param value Nuevo término
-   */
-  onSearchChange(value: string): void {
-    this.searchTerm.set(value);
+  /** Consulta el detalle de un autor. */
+  onDetail(id: number): void {
     this.loading.set(true);
-    this.searchByName.execute(value, this.count()).subscribe({
-      next: (authors) => { this.authors.set(authors); this.loading.set(false); },
-      error: () => { this.error.set('No se pudieron buscar los autores.'); this.loading.set(false); },
+    this.getAuthorById.execute(id).subscribe({
+      next: (author) => { this.selectedAuthor.set(author); this.loading.set(false); },
+      error: () => { this.error.set('No se pudo cargar el detalle del autor.'); this.loading.set(false); },
     });
+  }
+
+  /** Cierra el detalle seleccionado. */
+  closeDetail(): void {
+    this.selectedAuthor.set(null);
   }
 
   /**

@@ -41,7 +41,6 @@ describe('FilterAuthorsByNationalityUseCase', () => {
       getAuthors: jest.fn().mockReturnValue([]),
       getAuthorsByNationality: jest.fn().mockReturnValue([]),
       getAuthorById: jest.fn().mockReturnValue([]),
-      searchAuthors: jest.fn().mockReturnValue([]),
     };
     const remoteUseCase = new FilterAuthorsByNationalityUseCase(repository);
 

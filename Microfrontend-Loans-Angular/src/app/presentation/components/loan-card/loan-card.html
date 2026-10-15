@@ -14,5 +14,8 @@
       <li><i class="bi bi-calendar-x"></i> Devolución: {{ loan().returnDate }}</li>
       <li><i class="bi bi-hash"></i> ID: {{ loan().id }}</li>
     </ul>
+    <button type="button" class="btn btn-sm btn-outline-primary mt-3" (click)="detailRequested.emit(loan().id)">
+      Ver detalle
+    </button>
   </div>
 </div>

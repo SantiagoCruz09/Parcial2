@@ -98,16 +98,28 @@ describe('AuthorsPage', () => {
     expect(visible[0].nationality).toBe('Argentina');
   });
 
-  it('busca los autores por nombre', () => {
+  it('consulta el detalle de un autor', () => {
     fixture.detectChanges();
     flushAuthors();
 
-    fixture.componentInstance.onSearchChange('borges');
+    fixture.componentInstance.onDetail(1);
+    httpMock.expectOne((req) => req.url.includes('/api/authors/detail/1')).flush(authors[0]);
+
+    expect(fixture.componentInstance.selectedAuthor()).toEqual(authors[0]);
+    fixture.componentInstance.closeDetail();
+    expect(fixture.componentInstance.selectedAuthor()).toBeNull();
+  });
+
+  it('gestiona el error del detalle de un autor', () => {
+    fixture.detectChanges();
     flushAuthors();
 
-    const visible = fixture.componentInstance.visibleAuthors();
-    expect(visible).toHaveLength(1);
-    expect(visible[0].id).toBe(2);
+    fixture.componentInstance.onDetail(99);
+    httpMock.expectOne((req) => req.url.includes('/api/authors/detail/99'))
+      .flush('error', { status: 404, statusText: 'Not Found' });
+
+    expect(fixture.componentInstance.error()).toBe('No se pudo cargar el detalle del autor.');
+    expect(fixture.componentInstance.loading()).toBe(false);
   });
 
   it('recarga los autores al cambiar la cantidad', () => {
