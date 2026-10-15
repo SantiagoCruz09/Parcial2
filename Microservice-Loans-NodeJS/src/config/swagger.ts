@@ -1,4 +1,4 @@
-import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerJsdoc = require('swagger-jsdoc');
 
 /**
  * Especificación de Swagger (OpenAPI) para la API de Loans.

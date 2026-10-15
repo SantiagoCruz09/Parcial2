@@ -1,10 +1,19 @@
 import { Router } from "express";
 import { BooksController } from "./books.controller";
+import { InMemoryBookRepository } from "../../../infrastructure/repositories/in-memory-book.repository";
+import { GetAllBooksUseCase } from "../../../application/use-cases/get-all-books.use-case";
+import { GetBookByIdUseCase } from "../../../application/use-cases/get-book-by-id.use-case";
+import { GetBooksByGenreUseCase } from "../../../application/use-cases/get-books-by-genre.use-case";
 
 export class BooksRoutes {
   static get routes(): Router {
     const router = Router();
-    const controller = new BooksController();
+    const repository = new InMemoryBookRepository();
+    const controller = new BooksController(
+      new GetAllBooksUseCase(repository),
+      new GetBookByIdUseCase(repository),
+      new GetBooksByGenreUseCase(repository),
+    );
 
     /**
      * @openapi

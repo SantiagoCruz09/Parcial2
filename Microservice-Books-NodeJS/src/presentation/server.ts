@@ -1,7 +1,8 @@
-import cors from "cors";
-import express, { Router } from "express";
+import cors = require("cors");
+import express = require("express");
+import { Router } from "express";
 import path from "path";
-import swaggerUi from 'swagger-ui-express';
+import swaggerUi = require('swagger-ui-express');
 import { swaggerSpec } from '../config/swagger';
 import { Options } from "../domain/interfaces/server.interface";
 
@@ -30,32 +31,22 @@ export class Server {
     this.port = port;
     this.publicPath = publicPath;
     this.routes = routes;
+    this.app.use(cors({
+      origin: ["http://localhost:4200", "http://localhost:4201", "http://localhost:4202", "http://localhost:4203"],
+    }));
+    this.app.use(express.json());
+    this.app.use(express.static(this.publicPath));
+    this.app.use(this.routes);
+    this.app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    this.app.use((req, res) => {
+      res.sendFile(path.join(__dirname, `../../${this.publicPath}/index.html`));
+    });
   }
 
   /**
    * Inicializa y arranca el servidor.
    */
   async start(): Promise<void> {
-    //* Middlewares
-    this.app.use(cors());
-    this.app.use(express.json());
-
-    //* Public Folder
-    this.app.use(express.static(this.publicPath));
-
-    //* Routes
-    this.app.use(this.routes);
-
-    //* Swagger Docs
-    this.app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-    //* SPA
-    this.app.use((req, res) => {
-      res.sendFile(
-        path.join(__dirname, `../../${this.publicPath}/index.html`)
-      );
-    });
-
     this.app.listen(this.port, () => {
       console.log(`Server Books Running on Port ${this.port}`);
     });

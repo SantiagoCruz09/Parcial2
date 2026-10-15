@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { HandleError } from "../../../domain/erros/handle.error";
-import { LoansService } from "./loans.service";
+import { GetAllLoansUseCase } from "../../../application/use-cases/get-all-loans.use-case";
+import { GetLoanByIdUseCase } from "../../../application/use-cases/get-loan-by-id.use-case";
+import { GetLoansByStatusUseCase } from "../../../application/use-cases/get-loans-by-status.use-case";
 
 /**
  * Controlador de préstamos.
@@ -10,9 +12,11 @@ import { LoansService } from "./loans.service";
  * delegando la lógica de negocio al `LoansService`.
  */
 export class LoansController {
-
-  /** Servicio de préstamos. */
-  private readonly loansService = new LoansService();
+  constructor(
+    private readonly allLoansUseCase: GetAllLoansUseCase,
+    private readonly loanByIdUseCase: GetLoanByIdUseCase,
+    private readonly loansByStatusUseCase: GetLoansByStatusUseCase,
+  ) {}
 
   /**
    * Maneja la petición HTTP para obtener un listado de préstamos.
@@ -28,8 +32,8 @@ export class LoansController {
   getAllLoans = (req: Request, res: Response): void => {
     const { countLoans } = req.params;
 
-    this.loansService
-      .getAllLoans(Number(countLoans))
+    this.allLoansUseCase
+      .execute(Number(countLoans))
       .then((loans) => res.status(200).json(loans))
       .catch((error) => HandleError.error(error, res));
   };
@@ -48,8 +52,8 @@ export class LoansController {
   getLoanById = (req: Request, res: Response): void => {
     const { id } = req.params;
 
-    this.loansService
-      .getLoanById(Number(id))
+    this.loanByIdUseCase
+      .execute(Number(id))
       .then((loan) => res.status(200).json(loan))
       .catch((error) => HandleError.error(error, res));
   };
@@ -68,8 +72,8 @@ export class LoansController {
   getLoansByStatus = (req: Request, res: Response): void => {
     const { status, countLoans } = req.params;
 
-    this.loansService
-      .getLoansByStatus(status as string, Number(countLoans))
+    this.loansByStatusUseCase
+      .execute(status as string, Number(countLoans))
       .then((loans) => res.status(200).json(loans))
       .catch((error) => HandleError.error(error, res));
   };

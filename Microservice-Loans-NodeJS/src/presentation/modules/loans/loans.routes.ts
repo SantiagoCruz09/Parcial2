@@ -1,10 +1,19 @@
 import { Router } from "express";
 import { LoansController } from "./loans.controller";
+import { InMemoryLoanRepository } from "../../../infrastructure/repositories/in-memory-loan.repository";
+import { GetAllLoansUseCase } from "../../../application/use-cases/get-all-loans.use-case";
+import { GetLoanByIdUseCase } from "../../../application/use-cases/get-loan-by-id.use-case";
+import { GetLoansByStatusUseCase } from "../../../application/use-cases/get-loans-by-status.use-case";
 
 export class LoansRoutes {
   static get routes(): Router {
     const router = Router();
-    const controller = new LoansController();
+    const repository = new InMemoryLoanRepository();
+    const controller = new LoansController(
+      new GetAllLoansUseCase(repository),
+      new GetLoanByIdUseCase(repository),
+      new GetLoansByStatusUseCase(repository),
+    );
 
     /**
      * @openapi
