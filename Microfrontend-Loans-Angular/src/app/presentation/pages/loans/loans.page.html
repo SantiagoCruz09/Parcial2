@@ -1,0 +1,77 @@
+<section class="loans-page">
+  <header class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h2 class="mb-1"><i class="bi bi-journal-arrow-up"></i> Catálogo de Préstamos</h2>
+      <p class="text-body-secondary mb-0">
+        Microfrontend Loans &middot; microservicio Node.js (puerto 3003)
+      </p>
+    </div>
+    <button type="button" class="btn btn-outline-primary" (click)="reload()">
+      <i class="bi bi-arrow-clockwise"></i> Recargar
+    </button>
+  </header>
+
+  <div class="row g-2 align-items-end mb-4">
+    <div class="col-12 col-md-5">
+      <label class="form-label" for="loans-search">Buscar por usuario</label>
+      <input
+        id="loans-search"
+        type="text"
+        class="form-control"
+        placeholder="Escribe un nombre de usuario..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="onSearchChange($event)"
+      />
+    </div>
+    <div class="col-6 col-md-3">
+      <label class="form-label" for="loans-status">Estado</label>
+      <select
+        id="loans-status"
+        class="form-select"
+        [ngModel]="status()"
+        (ngModelChange)="onStatusChange($event)"
+      >
+        <option value="all">Todos</option>
+        <option *ngFor="let item of statuses" [value]="item">{{ item }}</option>
+      </select>
+    </div>
+    <div class="col-6 col-md-2">
+      <label class="form-label" for="loans-count">Cantidad</label>
+      <select
+        id="loans-count"
+        class="form-select"
+        [ngModel]="count()"
+        (ngModelChange)="onCountChange($event)"
+      >
+        <option *ngFor="let option of countOptions" [ngValue]="option">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="loading()" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2 text-body-secondary">Cargando préstamos...</p>
+  </div>
+
+  <div *ngIf="error() && !loading()" class="alert alert-danger" role="alert">
+    <i class="bi bi-exclamation-triangle"></i> {{ error() }}
+  </div>
+
+  <div
+    *ngIf="!loading() && !error() && visibleLoans().length === 0"
+    class="alert alert-info"
+    role="alert"
+  >
+    No se encontraron préstamos con los criterios seleccionados.
+  </div>
+
+  <div class="row g-3" *ngIf="!loading() && !error()">
+    <div class="col-12 col-sm-6 col-lg-4" *ngFor="let loan of visibleLoans()">
+      <app-loan-card [loan]="loan"></app-loan-card>
+    </div>
+  </div>
+</section>

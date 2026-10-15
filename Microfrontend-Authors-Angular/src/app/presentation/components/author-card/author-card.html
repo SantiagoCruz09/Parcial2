@@ -1,0 +1,14 @@
+<div class="card h-100 shadow-sm author-card">
+  <div class="card-body d-flex flex-column">
+    <div class="d-flex justify-content-between align-items-start">
+      <h5 class="card-title mb-1">{{ author().name }}</h5>
+      <span class="badge text-bg-success">{{ author().booksWritten }} libros</span>
+    </div>
+    <h6 class="card-subtitle mb-2 text-body-secondary">
+      <i class="bi bi-geo-alt"></i> {{ author().nationality }}
+    </h6>
+    <ul class="list-unstyled small text-body-secondary mb-0 mt-3">
+      <li><i class="bi bi-hash"></i> ID: {{ author().id }}</li>
+    </ul>
+  </div>
+</div>
